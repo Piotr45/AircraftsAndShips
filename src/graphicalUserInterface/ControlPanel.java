@@ -12,13 +12,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 
-public class ControlPanel extends Application {
-
-    @FXML
-    private TextField test;
-
-    @FXML
-    private ComboBox<String> entityHandler;
+public class ControlPanel {
 
     // Variables
 
@@ -59,29 +53,5 @@ public class ControlPanel extends Application {
     public void removeShipFromListOfShips(){}
 
 
-    // JavaFX methods
 
-    public void initialize(){
-        entityHandler.getItems().addAll("Aircraft", "Ship");
-        entityHandler.getSelectionModel().select("Aircraft");
-    }
-
-    public static BorderPane createControlPane(){
-        entityHandler.getItems().addAll("Aircraft", "Ship");
-        entityHandler.getSelectionModel().select("Aircraft");
-
-        BorderPane borderPane = new BorderPane();
-        borderPane.getStyleClass().add("bg-1");
-        borderPane.setPadding(new Insets(5));
-
-        return borderPane;
-    }
-
-    private static Label createLabel(String text, String styleClass){
-        Label label = new Label(text);
-        label.getStyleClass().add(styleClass);
-        BorderPane.setMargin(label, new Insets(5));
-        label.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
-        return label;
-    }
 }
