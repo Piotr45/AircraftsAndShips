@@ -14,7 +14,7 @@ public abstract class Aircraft implements Runnable{
     private int maximumAmountOfPassengers;
     private int currentAmountOfPassengers;
     private int amountOfStaff;
-    private List<Airport> listOfVisitedAirports;
+    private Airport lastVisitedAirport;
     private Airport nextAirport;
     private String travelRoute;
     private int id;
@@ -23,13 +23,13 @@ public abstract class Aircraft implements Runnable{
 
     // Constructor
 
-    public Aircraft(float maximumAmountOfFuel, float currentAmountOfFuel, int maximumAmountOfPassengers, int currentAmountOfPassengers, int amountOfStaff, List<Airport> listOfVisitedAirports, Airport nextAirport, String travelRoute, int id, Pair<Integer, Integer> coordinates) {
+    public Aircraft(float maximumAmountOfFuel, float currentAmountOfFuel, int maximumAmountOfPassengers, int currentAmountOfPassengers, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, String travelRoute, int id, Pair<Integer, Integer> coordinates) {
         setMaximumAmountOfFuel(maximumAmountOfFuel);
         setCurrentAmountOfFuel(currentAmountOfFuel);
         setMaximumAmountOfPassengers(maximumAmountOfPassengers);
         setCurrentAmountOfPassengers(currentAmountOfPassengers);
         setAmountOfStaff(amountOfStaff);
-        setListOfVisitedAirports(listOfVisitedAirports);
+        setLastVisitedAirport(lastVisitedAirport);
         setNextAirport(nextAirport);
         setTravelRoute(travelRoute);
         setId(id);
@@ -42,7 +42,7 @@ public abstract class Aircraft implements Runnable{
         setMaximumAmountOfPassengers(0);
         setCurrentAmountOfPassengers(0);
         setAmountOfStaff(0);
-        setListOfVisitedAirports(null);
+        setLastVisitedAirport(null);
         setNextAirport(null);
         setTravelRoute(null);
         setId(-1);
@@ -91,12 +91,12 @@ public abstract class Aircraft implements Runnable{
         this.amountOfStaff = amountOfStaff;
     }
 
-    public List<Airport> getListOfVisitedAirports() {
-        return listOfVisitedAirports;
+    public Airport getLastVisitedAirports() {
+        return lastVisitedAirport;
     }
 
-    public void setListOfVisitedAirports(List<Airport> listOfVisitedAirports) {
-        this.listOfVisitedAirports = listOfVisitedAirports;
+    public void setLastVisitedAirport(Airport lastVisitedAirport) {
+        this.lastVisitedAirport = lastVisitedAirport;
     }
 
     public Airport getNextAirport() {
@@ -156,4 +156,9 @@ public abstract class Aircraft implements Runnable{
     public void emergencyLanding(){}
 
     public void stayInQueue(){}
+
+    @Override
+    public String toString() {
+        return "Aircraft " + id;
+    }
 }

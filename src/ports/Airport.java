@@ -40,4 +40,9 @@ public abstract class Airport {
     // Methods
 
     public void serviceAircraft(){}
+
+    @Override
+    public String toString() {
+        return name + " Airport";
+    }
 }

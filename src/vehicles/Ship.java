@@ -94,4 +94,9 @@ public abstract class Ship {
     // Methods
 
     public void shuttle(){}
+
+    @Override
+    public String toString() {
+        return "Ship " + id;
+    }
 }
