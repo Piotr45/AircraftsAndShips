@@ -1,8 +1,10 @@
 package vehicles;
 
 import enumerates.typesOfArms;
+import graphicalUserInterface.ControlPanel;
 import javafx.util.Pair;
 import interfaces.planeFactory;
+import ports.Airport;
 
 public class MilitaryShip extends Ship implements planeFactory{
 
@@ -21,8 +23,7 @@ public class MilitaryShip extends Ship implements planeFactory{
     public void launchNewMilitaryAircraft(){}
 
     @Override
-    public void createPlane() {
-
+    public void createPlane(float maximumAmountOfFuel, int maximumAmountOfPassengers, int currentAmountOfPassengers, int amountOfStaff, Airport nextAirport, String travelRoute, typesOfArms typeOfArm) throws Exception {
+        Aircraft newAircraft = new MilitaryAircraft(maximumAmountOfFuel, amountOfStaff, null, nextAirport, travelRoute, ControlPanel.addId(), this.getCoordinates(), typeOfArm);
     }
-
 }

@@ -7,8 +7,15 @@ import java.util.List;
 
 public class MilitaryAircraft extends Aircraft{
 
-    public MilitaryAircraft(float maximumAmountOfFuel, float currentAmountOfFuel, int maximumAmountOfPassengers, int currentAmountOfPassengers, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, String travelRoute, int id, Pair<Integer, Integer> coordinates, typesOfArms typeOfArms) {
-        super(maximumAmountOfFuel, currentAmountOfFuel, maximumAmountOfPassengers, currentAmountOfPassengers, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute, id, coordinates);
+    public MilitaryAircraft(float maximumAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, String travelRoute, int id, Pair<Integer, Integer> coordinates, typesOfArms typeOfArms) {
+        setMaximumAmountOfFuel(maximumAmountOfFuel);
+        setCurrentAmountOfFuel(maximumAmountOfFuel);
+        setLastVisitedAirport(lastVisitedAirport);
+        setAmountOfStaff(amountOfStaff);
+        setNextAirport(nextAirport);
+        setTravelRoute(travelRoute);
+        setId(id);
+        setCoordinates(coordinates);
         setTypeOfArms(typeOfArms);
     }
 

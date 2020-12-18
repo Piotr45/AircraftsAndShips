@@ -23,9 +23,9 @@ public abstract class Aircraft implements Runnable{
 
     // Constructor
 
-    public Aircraft(float maximumAmountOfFuel, float currentAmountOfFuel, int maximumAmountOfPassengers, int currentAmountOfPassengers, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, String travelRoute, int id, Pair<Integer, Integer> coordinates) {
+    public Aircraft(float maximumAmountOfFuel, int maximumAmountOfPassengers, int currentAmountOfPassengers, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, String travelRoute, int id, Pair<Integer, Integer> coordinates) {
         setMaximumAmountOfFuel(maximumAmountOfFuel);
-        setCurrentAmountOfFuel(currentAmountOfFuel);
+        setCurrentAmountOfFuel(maximumAmountOfFuel);
         setMaximumAmountOfPassengers(maximumAmountOfPassengers);
         setCurrentAmountOfPassengers(currentAmountOfPassengers);
         setAmountOfStaff(amountOfStaff);

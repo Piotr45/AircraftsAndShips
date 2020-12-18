@@ -9,7 +9,12 @@ public abstract class Airport {
 
     private String name;
     private Pair<Integer, Integer> coordinates;
-    private Aircraft currentServicedAircraft;
+    private Aircraft currentServicedAircraft = null;
+
+    public Airport(String name, Pair<Integer, Integer> coordinates) {
+        this.name = name;
+        this.coordinates = coordinates;
+    }
 
     // Getters and Setters
 
