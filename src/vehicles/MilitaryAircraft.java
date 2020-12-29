@@ -1,31 +1,39 @@
 package vehicles;
 
 import enumerates.typesOfArms;
+import javafx.beans.property.IntegerProperty;
+import other.TravelRoute;
 import ports.Airport;
 import javafx.util.Pair;
 import java.util.List;
 
 public class MilitaryAircraft extends Aircraft{
 
-    public MilitaryAircraft(float maximumAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, String travelRoute, int id, Pair<Integer, Integer> coordinates, typesOfArms typeOfArms) {
-        setMaximumAmountOfFuel(maximumAmountOfFuel);
-        setCurrentAmountOfFuel(maximumAmountOfFuel);
-        setLastVisitedAirport(lastVisitedAirport);
-        setAmountOfStaff(amountOfStaff);
-        setNextAirport(nextAirport);
-        setTravelRoute(travelRoute);
-        setId(id);
-        setCoordinates(coordinates);
-        setTypeOfArms(typeOfArms);
+    private typesOfArms typeOfArms;
+
+    public MilitaryAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
+        super(coordinates, id, maximumAmountOfFuel, currentAmountOfFuel, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
+        this.typeOfArms = typeOfArms;
     }
 
     public MilitaryAircraft() {
-        super();
-        setTypeOfArms(typesOfArms.NONE);
     }
 
     @Override
     public void run() {
 
+    }
+
+    public typesOfArms getTypeOfArms() {
+        return typeOfArms;
+    }
+
+    public void setTypeOfArms(typesOfArms typeOfArms) {
+        this.typeOfArms = typeOfArms;
+    }
+
+    @Override
+    public String toString() {
+        return "MilitaryAircraft " + this.getId();
     }
 }

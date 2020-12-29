@@ -25,10 +25,10 @@ public class ControlPanel {
     private List<Airport> listOfAirports = new ArrayList<Airport>();
     private List<Aircraft> listOfAircrafts = new ArrayList<Aircraft>();
     private List<Ship> listOfShips = new ArrayList<Ship>();
-    private static List<Integer> listOfIds = new ArrayList<>();
+    private List<Integer> listOfIds = new ArrayList<>();
 
     // Getters and Setters
-    public static List<Integer> getListOfIds() {
+    public List<Integer> getListOfIds() {
         return listOfIds;
     }
 
@@ -45,7 +45,7 @@ public class ControlPanel {
     }
 
     // Methods
-    public static int addId(){
+    public int addId(){
         int id = getListOfIds().get(listOfIds.size() - 1) + 1;
         listOfIds.add(id);
         return id;

@@ -1,86 +1,65 @@
 package vehicles;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.Property;
+import javafx.beans.property.SimpleIntegerProperty;
+import other.TravelRoute;
 import ports.Airport;
 import javafx.util.Pair;
 import enumerates.typesOfArms;
 import java.util.List;
 
-public abstract class Aircraft implements Runnable{
+public abstract class Aircraft extends Vehicle implements Runnable{
 
     // Variables
-
-    private float maximumAmountOfFuel;
-    private float currentAmountOfFuel;
-    private int maximumAmountOfPassengers;
-    private int currentAmountOfPassengers;
+    private IntegerProperty maximumAmountOfFuel = new SimpleIntegerProperty(this, "maximumAmountOfFuel");
+    private IntegerProperty currentAmountOfFuel = new SimpleIntegerProperty(this, "currentAmountOfFuel");
     private int amountOfStaff;
+    //TODO aktualizuj lotniska
     private Airport lastVisitedAirport;
     private Airport nextAirport;
-    private String travelRoute;
-    private int id;
-    private Pair<Integer, Integer> coordinates;
-    private typesOfArms typeOfArms;
+    private TravelRoute travelRoute = new TravelRoute();
 
-    // Constructor
 
-    public Aircraft(float maximumAmountOfFuel, int maximumAmountOfPassengers, int currentAmountOfPassengers, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, String travelRoute, int id, Pair<Integer, Integer> coordinates) {
-        setMaximumAmountOfFuel(maximumAmountOfFuel);
-        setCurrentAmountOfFuel(maximumAmountOfFuel);
-        setMaximumAmountOfPassengers(maximumAmountOfPassengers);
-        setCurrentAmountOfPassengers(currentAmountOfPassengers);
-        setAmountOfStaff(amountOfStaff);
-        setLastVisitedAirport(lastVisitedAirport);
-        setNextAirport(nextAirport);
-        setTravelRoute(travelRoute);
-        setId(id);
-        setCoordinates(coordinates);
+    // Constructors
+
+    public Aircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
+        super(coordinates, id);
+        this.maximumAmountOfFuel = maximumAmountOfFuel;
+        this.currentAmountOfFuel = currentAmountOfFuel;
+        this.amountOfStaff = amountOfStaff;
+        this.lastVisitedAirport = lastVisitedAirport;
+        this.nextAirport = nextAirport;
+        this.travelRoute = travelRoute;
     }
 
     public Aircraft() {
-        setMaximumAmountOfFuel(0);
-        setCurrentAmountOfFuel(0);
-        setMaximumAmountOfPassengers(0);
-        setCurrentAmountOfPassengers(0);
-        setAmountOfStaff(0);
-        setLastVisitedAirport(null);
-        setNextAirport(null);
-        setTravelRoute(null);
-        setId(-1);
-        setCoordinates(null);
     }
 
     // Getters and Setters
 
-    public float getMaximumAmountOfFuel() {
+    public int getMaximumAmountOfFuel() {
+        return maximumAmountOfFuel.get();
+    }
+
+    public IntegerProperty maximumAmountOfFuelProperty() {
         return maximumAmountOfFuel;
     }
 
-    public void setMaximumAmountOfFuel(float maximumAmountOfFuel) {
-        this.maximumAmountOfFuel = maximumAmountOfFuel;
+    public void setMaximumAmountOfFuel(int maximumAmountOfFuel) {
+        this.maximumAmountOfFuel.set(maximumAmountOfFuel);
     }
 
-    public float getCurrentAmountOfFuel() {
+    public int getCurrentAmountOfFuel() {
+        return currentAmountOfFuel.get();
+    }
+
+    public IntegerProperty currentAmountOfFuelProperty() {
         return currentAmountOfFuel;
     }
 
-    public void setCurrentAmountOfFuel(float currentAmountOfFuel) {
-        this.currentAmountOfFuel = currentAmountOfFuel;
-    }
-
-    public int getMaximumAmountOfPassengers() {
-        return maximumAmountOfPassengers;
-    }
-
-    public void setMaximumAmountOfPassengers(int maximumAmountOfPassengers) {
-        this.maximumAmountOfPassengers = maximumAmountOfPassengers;
-    }
-
-    public int getCurrentAmountOfPassengers() {
-        return currentAmountOfPassengers;
-    }
-
-    public void setCurrentAmountOfPassengers(int currentAmountOfPassengers) {
-        this.currentAmountOfPassengers = currentAmountOfPassengers;
+    public void setCurrentAmountOfFuel(int currentAmountOfFuel) {
+        this.currentAmountOfFuel.set(currentAmountOfFuel);
     }
 
     public int getAmountOfStaff() {
@@ -91,7 +70,7 @@ public abstract class Aircraft implements Runnable{
         this.amountOfStaff = amountOfStaff;
     }
 
-    public Airport getLastVisitedAirports() {
+    public Airport getLastVisitedAirport() {
         return lastVisitedAirport;
     }
 
@@ -107,36 +86,12 @@ public abstract class Aircraft implements Runnable{
         this.nextAirport = nextAirport;
     }
 
-    public String getTravelRoute() {
+    public TravelRoute getTravelRoute() {
         return travelRoute;
     }
 
-    public void setTravelRoute(String travelRoute) {
+    public void setTravelRoute(TravelRoute travelRoute) {
         this.travelRoute = travelRoute;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public Pair<Integer, Integer> getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(Pair<Integer, Integer> coordinates) {
-        this.coordinates = coordinates;
-    }
-
-    public typesOfArms getTypeOfArms() {
-        return typeOfArms;
-    }
-
-    public void setTypeOfArms(typesOfArms typeOfArms) {
-        this.typeOfArms = typeOfArms;
     }
 
     // Methods
@@ -159,6 +114,6 @@ public abstract class Aircraft implements Runnable{
 
     @Override
     public String toString() {
-        return "Aircraft " + id;
+        return "Aircraft " + this.getId();
     }
 }

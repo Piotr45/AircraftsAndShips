@@ -1,38 +1,31 @@
 package ports;
 
+import enumerates.typesOfArms;
+import interfaces.planeFactory;
+import javafx.beans.property.IntegerProperty;
+import other.Entity;
+import other.TravelRoute;
 import vehicles.Aircraft;
 import javafx.util.Pair;
 
-public abstract class Airport {
+public class Airport extends Entity implements planeFactory {
 
     // Variables
 
-    private String name;
-    private Pair<Integer, Integer> coordinates;
     private Aircraft currentServicedAircraft = null;
 
-    public Airport(String name, Pair<Integer, Integer> coordinates) {
-        this.name = name;
-        this.coordinates = coordinates;
+    public Airport(String name, Pair<IntegerProperty, IntegerProperty> coordinates) {
+        super(coordinates, name);
+    }
+
+    public Airport(String name) {
+        super(name);
+    }
+
+    public Airport() {
     }
 
     // Getters and Setters
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public Pair<Integer, Integer> getCoordinates() {
-        return coordinates;
-    }
-
-    public void setCoordinates(Pair<Integer, Integer> coordinates) {
-        this.coordinates = coordinates;
-    }
 
     public Aircraft getCurrentServicedAircraft() {
         return currentServicedAircraft;
@@ -48,6 +41,15 @@ public abstract class Airport {
 
     @Override
     public String toString() {
-        return name + " Airport";
+        return super.toString();
+    }
+
+    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
+        return null;
+    }
+
+    @Override
+    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
+        return null;
     }
 }

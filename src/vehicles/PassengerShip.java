@@ -1,14 +1,20 @@
 package vehicles;
 
+import javafx.beans.property.IntegerProperty;
 import javafx.util.Pair;
 
 public class PassengerShip extends Ship {
 
-    public PassengerShip(int id, Pair<Integer, Integer> coordinates, int maximumAmountOfPassengers, int currentAmountOfPassengers, String firmName, int speed) {
-        super(id, coordinates, maximumAmountOfPassengers, currentAmountOfPassengers, firmName, speed);
+    public PassengerShip(Pair<IntegerProperty, IntegerProperty> coordinates, int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers1, String firmName, int speed) {
+        super(coordinates, id, maximumAmountOfPassengers, currentAmountOfPassengers1, firmName, speed);
     }
 
     public PassengerShip() {
         super();
+    }
+
+    @Override
+    public String toString() {
+        return this.getFirmName() + " Ship " + this.getId();
     }
 }

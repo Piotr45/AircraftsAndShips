@@ -2,28 +2,36 @@ package vehicles;
 
 import enumerates.typesOfArms;
 import graphicalUserInterface.ControlPanel;
+import javafx.beans.property.IntegerProperty;
 import javafx.util.Pair;
 import interfaces.planeFactory;
+import other.TravelRoute;
 import ports.Airport;
 
-public class MilitaryShip extends Ship implements planeFactory{
+public class MilitaryShip extends Ship {//implements planeFactory{
 
-    public MilitaryShip(int id, Pair<Integer, Integer> coordinates, int maximumAmountOfPassengers, int currentAmountOfPassengers, String firmName, int speed, typesOfArms typeOfArms) {
-        super(id, coordinates, maximumAmountOfPassengers, currentAmountOfPassengers, firmName, speed);
-        setTypeOfArms(typeOfArms);
+    private typesOfArms typeOfArms;
+
+    public MilitaryShip(Pair<IntegerProperty, IntegerProperty> coordinates, int id, int maximumAmountOfPassengers1, IntegerProperty currentAmountOfPassengers1, String firmName, int speed, typesOfArms typeOfArms) {
+        super(coordinates, id, maximumAmountOfPassengers1, currentAmountOfPassengers1, firmName, speed);
+        this.typeOfArms = typeOfArms;
     }
 
     public MilitaryShip() {
-        super();
-        setTypeOfArms(typesOfArms.NONE);
     }
 
     // Methods
 
     public void launchNewMilitaryAircraft(){}
 
+//    @Override
+//    public Aircraft createPlane(float maximumAmountOfFuel, int maximumAmountOfPassengers, int currentAmountOfPassengers, int amountOfStaff, Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArm) throws Exception {
+//        return new MilitaryAircraft(maximumAmountOfFuel, amountOfStaff, null, nextAirport, travelRoute, ControlPanel.addId(), this.getCoordinates(), typeOfArm);
+//    }
+
+
     @Override
-    public void createPlane(float maximumAmountOfFuel, int maximumAmountOfPassengers, int currentAmountOfPassengers, int amountOfStaff, Airport nextAirport, String travelRoute, typesOfArms typeOfArm) throws Exception {
-        Aircraft newAircraft = new MilitaryAircraft(maximumAmountOfFuel, amountOfStaff, null, nextAirport, travelRoute, ControlPanel.addId(), this.getCoordinates(), typeOfArm);
+    public String toString() {
+        return "Military Ship " + this.getId();
     }
 }
