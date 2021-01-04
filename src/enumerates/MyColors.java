@@ -6,7 +6,9 @@ public enum MyColors {
      mintCream("#F1F7EE"),
      laurelGreen("#B0BEA9"),
      asparagus("#92AA83"),
-     nyanza("#E0EDC5");
+     nyanza("#E0EDC5"),
+     rubyRed("#A41623"),
+     rajah("#FFB563");
 
      public final String hexCode;
 

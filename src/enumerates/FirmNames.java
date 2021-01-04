@@ -1,6 +1,6 @@
 package enumerates;
 
-public enum firmNames {
+public enum FirmNames {
     Titanic,
     Poseidon
 }

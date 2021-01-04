@@ -1,13 +1,10 @@
 package ports;
 
-import enumerates.typesOfArms;
-import interfaces.planeFactory;
 import javafx.beans.property.IntegerProperty;
 import javafx.util.Pair;
 import other.TravelRoute;
 import vehicles.Aircraft;
 import vehicles.PassengerAircraft;
-import graphicalUserInterface.ControlPanel;
 
 public class CivilianAirport extends Airport {
 

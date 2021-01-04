@@ -1,19 +1,15 @@
 package vehicles;
 
 import enumerates.typesOfArms;
-import graphicalUserInterface.ControlPanel;
 import javafx.beans.property.IntegerProperty;
 import javafx.util.Pair;
-import interfaces.planeFactory;
-import other.TravelRoute;
-import ports.Airport;
 
 public class MilitaryShip extends Ship {//implements planeFactory{
 
     private typesOfArms typeOfArms;
 
-    public MilitaryShip(Pair<IntegerProperty, IntegerProperty> coordinates, int id, int maximumAmountOfPassengers1, IntegerProperty currentAmountOfPassengers1, String firmName, int speed, typesOfArms typeOfArms) {
-        super(coordinates, id, maximumAmountOfPassengers1, currentAmountOfPassengers1, firmName, speed);
+    public MilitaryShip(Pair<IntegerProperty, IntegerProperty> coordinates, int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, String firmName, int speed, typesOfArms typeOfArms) {
+        super(coordinates, id, maximumAmountOfPassengers, currentAmountOfPassengers, speed);
         this.typeOfArms = typeOfArms;
     }
 
@@ -29,6 +25,16 @@ public class MilitaryShip extends Ship {//implements planeFactory{
 //        return new MilitaryAircraft(maximumAmountOfFuel, amountOfStaff, null, nextAirport, travelRoute, ControlPanel.addId(), this.getCoordinates(), typeOfArm);
 //    }
 
+
+    public typesOfArms getTypeOfArms() {
+        return typeOfArms;
+    }
+
+    @Override
+    public String getInfo() {
+        return super.getInfo() + "\n" +
+                "Type of arm: " + typeOfArms.name();
+    }
 
     @Override
     public String toString() {

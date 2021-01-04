@@ -1,5 +1,6 @@
 package vehicles;
 
+import enumerates.FirmNames;
 import enumerates.typesOfArms;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -7,25 +8,20 @@ import javafx.util.Pair;
 
 public abstract class Ship extends Vehicle{
 
-    // Variables
-
     private int maximumAmountOfPassengers;
     private IntegerProperty currentAmountOfPassengers = new SimpleIntegerProperty(this, "currentAmountOfPassengers");
-    private String firmName; // name firm changed to firmName
+
     private int speed;
 
-    public Ship(Pair<IntegerProperty, IntegerProperty> coordinates, int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, String firmName, int speed) {
+    public Ship(Pair<IntegerProperty, IntegerProperty> coordinates, int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, int speed) {
         super(coordinates, id);
         this.maximumAmountOfPassengers = maximumAmountOfPassengers;
         this.currentAmountOfPassengers = currentAmountOfPassengers;
-        this.firmName = firmName;
         this.speed = speed;
     }
 
     public Ship() {
     }
-
-    // Getters and Setters
 
     public int getMaximumAmountOfPassengers() {
         return maximumAmountOfPassengers;
@@ -47,14 +43,6 @@ public abstract class Ship extends Vehicle{
         this.currentAmountOfPassengers.set(currentAmountOfPassengers);
     }
 
-    public String getFirmName() {
-        return firmName;
-    }
-
-    public void setFirmName(String firmName) {
-        this.firmName = firmName;
-    }
-
     public int getSpeed() {
         return speed;
     }
@@ -63,10 +51,15 @@ public abstract class Ship extends Vehicle{
         this.speed = speed;
     }
 
-
-    // Methods
-
     public void shuttle(){}
+
+    @Override
+    public String getInfo() {
+        return super.getInfo() + "\n" +
+                "Maximum amount of passengers: " + maximumAmountOfPassengers + "\n" +
+                "Current amount of passengers: " + currentAmountOfPassengers + "\n" +
+                "Velocity of ship: " + speed;
+    }
 
     @Override
     public String toString() {

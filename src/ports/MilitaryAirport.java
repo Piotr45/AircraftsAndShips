@@ -6,7 +6,6 @@ import javafx.beans.property.IntegerProperty;
 import javafx.util.Pair;
 import vehicles.Aircraft;
 import vehicles.MilitaryAircraft;
-import graphicalUserInterface.ControlPanel;
 import other.TravelRoute;
 
 public class MilitaryAirport extends Airport implements planeFactory{
@@ -16,8 +15,12 @@ public class MilitaryAirport extends Airport implements planeFactory{
     }
 
     @Override
-    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
-        return null;
+    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel,
+                                   IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport,
+                                   TravelRoute travelRoute, typesOfArms typeOfArms)
+    {
+        return new MilitaryAircraft(coordinates, id, maximumAmountOfFuel, currentAmountOfFuel, amountOfStaff,lastVisitedAirport,
+                nextAirport, travelRoute, typeOfArms);
     }
 
     @Override

@@ -1,6 +1,9 @@
 package other;
 
+import javafx.beans.property.IntegerProperty;
+import javafx.util.Pair;
 import ports.Airport;
+import vehicles.PassengerAircraft;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -8,16 +11,16 @@ import java.util.List;
 
 public class TravelRoute {
 
-    private List<Airport> checkpoints = new LinkedList<>();
+    private List<Pair<IntegerProperty, IntegerProperty>> checkpoints = new LinkedList<>();
 
     public TravelRoute(){}
 
-    public List<Airport> getCheckpoints() {
+    public List<Pair<IntegerProperty, IntegerProperty>> getCheckpoints() {
         return checkpoints;
     }
 
-    public void addCheckpointToList(Airport airport){
-        checkpoints.add(airport);
+    public void addCheckpointToList(Pair<IntegerProperty, IntegerProperty> pair){
+        checkpoints.add(pair);
     }
 
 }

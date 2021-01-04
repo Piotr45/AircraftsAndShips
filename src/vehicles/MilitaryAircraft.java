@@ -11,7 +11,9 @@ public class MilitaryAircraft extends Aircraft{
 
     private typesOfArms typeOfArms;
 
-    public MilitaryAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
+    public MilitaryAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel,
+                            IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport,
+                            Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
         super(coordinates, id, maximumAmountOfFuel, currentAmountOfFuel, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
         this.typeOfArms = typeOfArms;
     }
@@ -22,6 +24,12 @@ public class MilitaryAircraft extends Aircraft{
     @Override
     public void run() {
 
+    }
+
+    @Override
+    public String getInfo() {
+        return super.getInfo() + "\n" +
+                "Type of arm: " + typeOfArms.toString();
     }
 
     public typesOfArms getTypeOfArms() {

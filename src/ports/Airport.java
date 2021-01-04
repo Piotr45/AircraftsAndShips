@@ -3,12 +3,12 @@ package ports;
 import enumerates.typesOfArms;
 import interfaces.planeFactory;
 import javafx.beans.property.IntegerProperty;
-import other.Entity;
+import other.Node;
 import other.TravelRoute;
 import vehicles.Aircraft;
 import javafx.util.Pair;
 
-public class Airport extends Entity implements planeFactory {
+public class Airport extends Node implements planeFactory {
 
     // Variables
 
@@ -40,16 +40,27 @@ public class Airport extends Entity implements planeFactory {
     public void serviceAircraft(){}
 
     @Override
+    public String getInfo() {
+        return super.getInfo() + "\n" +
+                "Current serviced aircraft: " + this.getCurrentServicedAircraft();
+    }
+
+    @Override
     public String toString() {
         return super.toString();
     }
 
-    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
+    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int maximumAmountOfPassengers,
+                                   IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel,
+                                   IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport,
+                                   Airport nextAirport, TravelRoute travelRoute) {
         return null;
     }
 
     @Override
-    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
+    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel,
+                                   IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport,
+                                   Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
         return null;
     }
 }

@@ -1,11 +1,10 @@
 package vehicles;
 
 import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Pair;
-import other.Entity;
+import other.Node;
 
-public abstract class Vehicle extends Entity {
+public abstract class Vehicle extends Node {
 
     private int id;
 
@@ -28,7 +27,6 @@ public abstract class Vehicle extends Entity {
     public void setId(int id) {
         this.id = id;
     }
-
 
     @Override
     public String toString() {

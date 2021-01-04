@@ -12,7 +12,9 @@ public class PassengerAircraft extends Aircraft {
     private int maximumAmountOfPassengers;
     private IntegerProperty currentAmountOfPassengers = new SimpleIntegerProperty(this, "currentAmountOfPassengers");
 
-    public PassengerAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
+    public PassengerAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int maximumAmountOfPassengers,
+                             IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel,
+                             IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
         super(coordinates, id, maximumAmountOfFuel, currentAmountOfFuel, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
         this.maximumAmountOfPassengers = maximumAmountOfPassengers;
         this.currentAmountOfPassengers = currentAmountOfPassengers;
@@ -44,6 +46,13 @@ public class PassengerAircraft extends Aircraft {
     @Override
     public void run() {
 
+    }
+
+    @Override
+    public String getInfo() {
+        return super.getInfo() + "\n" +
+                "Maximum amount of passengers: " + maximumAmountOfPassengers + "\n" +
+                "Current amount of passengers: " + currentAmountOfPassengers;
     }
 
     @Override

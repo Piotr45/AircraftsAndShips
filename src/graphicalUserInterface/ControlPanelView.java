@@ -1,5 +1,6 @@
 package graphicalUserInterface;
 
+import enumerates.FirmNames;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.Event;
@@ -18,10 +19,10 @@ import ports.CivilianAirport;
 import ports.MilitaryAirport;
 import vehicles.*;
 import enumerates.typesOfArms;
-import other.Entity;
+import other.Node;
 
-import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static java.lang.Integer.parseInt;
 
@@ -38,7 +39,7 @@ public class ControlPanelView implements EventHandler {
     private ComboBox<String> typeOfArmsComboBox = new ComboBox<>();
 
     @FXML
-    private ComboBox<String> firmNamesComboBox= new ComboBox<>();
+    private ComboBox<String> firmNamesComboBox = new ComboBox<>();
 
     @FXML
     private final Button submitButton = new Button("Submit");
@@ -52,6 +53,9 @@ public class ControlPanelView implements EventHandler {
     @FXML
     private TextField currentOfPassengersTextField = new TextField();
 
+    @FXML
+    private TextField velocityTextField = new TextField();
+
 
     private Scene scene;
     private final Stage controlPanelWindow;
@@ -59,96 +63,112 @@ public class ControlPanelView implements EventHandler {
     private VBox vehiclePanel;
     private VBox specificationPanel = new VBox();
 
-    public ControlPanel controlPanel;
-    private int numberOfAircrafts = 0;
+    public Controller controller;
 
     private final int prefWidth = 200;
     private final int prefHeight = 20;
 
-    //private TreeItem<Vehicle> root, aircrafts, ships, airports;
-    private TreeItem<Entity> treeRoot = new TreeItem<>(new Entity("root"));
-    private TreeItem<Entity> aircrafts = new TreeItem<>(new Entity("Aircrafts"));
-    private TreeItem<Entity> ships = new TreeItem<>(new Entity("Ships"));
-    private TreeItem<Entity> airports = new TreeItem<>(new Entity("Airports"));
-    private TreeView<Entity> treeView;
+    private TreeItem<Node> treeRoot = new TreeItem<>(new Node("root"));
+    private TreeItem<Node> aircrafts = new TreeItem<>(new Node("Aircrafts"));
+    private TreeItem<Node> ships = new TreeItem<>(new Node("Ships"));
+    private TreeItem<Node> airports = new TreeItem<>(new Node("Airports"));
+    private TreeView<Node> treeView;
 
-    public ControlPanelView(Stage controlPanelWindow, ControlPanel controlPanel) {
+    public ControlPanelView(Stage controlPanelWindow, Controller controller) {
         this.controlPanelWindow = controlPanelWindow;
-        this.controlPanel = controlPanel;
+        this.controller = controller;
         buildUI();
     }
 
-    // JavaFX methods
-
     private void buildUI() {
         setPromptTexts();
-
-        initializeEntityComboBox();
-        initializeTypeOfArmsComboBox();
-
-        initializeVehiclePanel();
-        treeView = createTreeView();
-
-        borderPane = new BorderPane();
-        borderPane.getStyleClass().add("bg-0");
-        borderPane.setPadding(new Insets(25));
+        initializeBorderPane();
+        initializeComboBoxes();
 
         scene = new Scene(borderPane, 800, 600);
 
         initializeStage();
+        initializeTreeView();
 
         chooseVehicleComboBox.setOnAction(this);
-
-        BorderPane.setAlignment(vehiclePanel, Pos.TOP_RIGHT);
-        borderPane.setRight(vehiclePanel);
-        BorderPane.setAlignment(treeView, Pos.CENTER_LEFT);
-        borderPane.setLeft(treeView);
 
         controlPanelWindow.show();
     }
 
-    private void setPromptTexts(){
+    private void setPromptTexts() {
         amountOfStaffTextField.clear();
         maximumAmountOfPassengersTextField.clear();
         currentOfPassengersTextField.clear();
+        velocityTextField.clear();
 
         amountOfStaffTextField.setPromptText("Amount of staff");
         maximumAmountOfPassengersTextField.setPromptText("Maximum amount of passengers");
         currentOfPassengersTextField.setPromptText("Current amount of passengers");
+        velocityTextField.setPromptText("Velocity");
     }
 
-    private void initializeVehiclePanel(){
+    private void initializeTreeView() {
+        treeView = createTreeView();
+        BorderPane.setAlignment(treeView, Pos.CENTER_LEFT);
+        borderPane.setLeft(treeView);
+    }
+
+    private void initializeBorderPane() {
+        borderPane = new BorderPane();
+        borderPane.getStyleClass().add("bg-0");
+        borderPane.setPadding(new Insets(25));
+    }
+
+    private void initializeComboBoxes() {
+        initializeTypeOfArmsComboBox();
+        initializeEntityComboBox();
+        initializeVehiclePanel();
+        initializeFirmNamesComboBox();
+    }
+
+    private void initializeFirmNamesComboBox() {
+        firmNamesComboBox.getItems().add("Select firm name");
+        for (FirmNames firmNames : FirmNames.values()) {
+            firmNamesComboBox.getItems().add(firmNames.name());
+        }
+        firmNamesComboBox.getSelectionModel().select("Select firm name");
+        firmNamesComboBox.setPrefSize(prefWidth, prefHeight);
+    }
+
+    private void initializeVehiclePanel() {
         vehiclePanel = new VBox();
         vehiclePanel.setPadding(new Insets(25));
         vehiclePanel.setAlignment(Pos.CENTER);
         vehiclePanel.getChildren().add(0, chooseVehicleComboBox);
+        BorderPane.setAlignment(vehiclePanel, Pos.TOP_RIGHT);
+        borderPane.setRight(vehiclePanel);
     }
 
-    private void initializeStage(){
+    private void initializeStage() {
         controlPanelWindow.setTitle("Control Panel");
         controlPanelWindow.setMinHeight(500);
         controlPanelWindow.setMinWidth(800);
         controlPanelWindow.setScene(scene);
     }
 
-    private void initializeTypeOfArmsComboBox(){
+    private void initializeTypeOfArmsComboBox() {
         typeOfArmsComboBox.getItems().add("Select weapon");
-        for (typesOfArms item: typesOfArms.values()){
-            if (!item.equals(typesOfArms.NONE)){
+        for (typesOfArms item : typesOfArms.values()) {
+            if (!item.equals(typesOfArms.NONE)) {
                 typeOfArmsComboBox.getItems().add(item.name());
             }
         }
-        typeOfArmsComboBox.setPrefSize(prefWidth,prefHeight);
+        typeOfArmsComboBox.setPrefSize(prefWidth, prefHeight);
         typeOfArmsComboBox.getSelectionModel().select("Select weapon");
     }
 
-    private void initializeEntityComboBox(){
+    private void initializeEntityComboBox() {
         chooseVehicleComboBox.getItems().addAll("Select Vehicle", "Passenger Aircraft", "Military Aircraft", "Passenger Ship", "Military Ship");
         chooseVehicleComboBox.getSelectionModel().select("Select Vehicle");
         chooseVehicleComboBox.setPrefSize(prefWidth, prefHeight);
     }
 
-    private void initializeAirportComboBox(boolean isCivil){
+    private void initializeAirportComboBox(boolean isCivil) {
         airportComboBox.getItems().clear();
         airportComboBox.getItems().add("Select Airport");
         addAirportsToComboBox(isCivil);
@@ -156,69 +176,91 @@ public class ControlPanelView implements EventHandler {
         airportComboBox.setPrefSize(prefWidth, prefHeight);
     }
 
-    private void resetVehiclePanel(){
+    private void resetVehiclePanel() {
         vehiclePanel.getChildren().clear();
         vehiclePanel.getChildren().add(0, chooseVehicleComboBox);
         setPromptTexts();
-        //chooseVehicleComboBox.getSelectionModel().select("Select Vehicle");
     }
 
-    private <T> void initializeSpecificationPanel(T object){
+    private <T> void createLabelsForAircraft(T object) {
+        Pair<IntegerProperty, IntegerProperty> coordinates = ((Aircraft) object).getCoordinates();
+        Label specificationLabel = createLabel(("Maximum amount of fuel: " + ((Aircraft) object).getMaximumAmountOfFuel()) + "\n" +
+                ("Current amount of fuel: " + ((Aircraft) object).getCurrentAmountOfFuel()) + "\n" +
+                ("Amount of staff: " + ((Aircraft) object).getAmountOfStaff()) + "\n" +
+                ("Last visited airport: " + ((Aircraft) object).getLastVisitedAirport()) + "\n" +
+                ("Next airport: " + ((Aircraft) object).getNextAirport()) + "\n" +
+                ("Travel route: " + ((Aircraft) object).getTravelRoute()) + "\n" +
+                ("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")", "bg-1");
+        specificationPanel.getChildren().add(specificationLabel);
+    }
+
+    private <T> void createLabelsForShip(T object) {
+        Pair<IntegerProperty, IntegerProperty> coordinates = ((Ship) object).getCoordinates();
+        Label specificationLabel = createLabel(("Firm name: " + ((PassengerShip) object).getFirmName()) + "\n" +
+                ("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")" + "\n" +
+                ("Maximum amount of passengers: " + ((Ship) object).getMaximumAmountOfPassengers()) + "\n" +
+                ("Current amount of passengers: " + ((Ship) object).getCurrentAmountOfPassengers()), "bg-1");
+        specificationPanel.getChildren().add(specificationLabel);
+    }
+
+    private <T> void initializeSpecificationPanel(T object) {
         specificationPanel = new VBox();
         specificationPanel.setPadding(new Insets(25));
-        if (object instanceof PassengerAircraft || object instanceof MilitaryAircraft){
-            specificationPanel = new VBox();
-            specificationPanel.setPadding(new Insets(25));
-            Label label1 = createLabel(("Maximum amount of fuel: " + ((Aircraft) object).getMaximumAmountOfFuel()), "bg-1");
-            Label label2 = createLabel(("Current amount of fuel: " + ((Aircraft) object).getCurrentAmountOfFuel()), "bg-1");
-            Label label3 = createLabel(("Maximum amount of passengers: " + ((PassengerAircraft) object).getMaximumAmountOfPassengers()), "bg-1");
-            Label label4 = createLabel(("Current amount of passengers: " + ((PassengerAircraft) object).getCurrentAmountOfPassengers()), "bg-1");
-            Label label5 = createLabel(("Amount of staff: " + ((Aircraft) object).getAmountOfStaff()), "bg-1");
-            Label label6 = createLabel(("Last visited airport: " + ((Aircraft) object).getLastVisitedAirport()), "bg-1");
-            Label label7 = createLabel(("Next airport: " + ((Aircraft) object).getNextAirport()), "bg-1");
-            Label label8 = createLabel(("Travel route: " + ((Aircraft) object).getTravelRoute()), "bg-1");
-            Label label9 = createLabel(("Coordinates: " + ((Aircraft) object).getCoordinates()), "bg-1");
-            //Label label10 = createLabel(("Type of arms: " + ((MilitaryAircraft) object).getTypeOfArms()), "bg-1");
-            specificationPanel.getChildren().add(label1); specificationPanel.getChildren().add(label2);
-            specificationPanel.getChildren().add(label3); specificationPanel.getChildren().add(label4);
-            specificationPanel.getChildren().add(label5); specificationPanel.getChildren().add(label6);
-            specificationPanel.getChildren().add(label7); specificationPanel.getChildren().add(label8);
-            specificationPanel.getChildren().add(label9); //specificationPanel.getChildren().add(label10);
-        }
-        if (object instanceof PassengerShip || object instanceof MilitaryShip){
-            Label label1 = createLabel(("Firm name: " + ((Ship) object).getFirmName()), "bg-1");
-            Label label2 = createLabel(("Coordinates: " + ((Ship) object).getCoordinates()), "bg-1");
-            Label label3 = createLabel(("Maximum amount of passengers: " + ((Ship) object).getMaximumAmountOfPassengers()), "bg-1");
-            Label label4 = createLabel(("Current amount of passengers: " + ((Ship) object).getCurrentAmountOfPassengers()), "bg-1");
-            specificationPanel.getChildren().add(label1); specificationPanel.getChildren().add(label2);
-            specificationPanel.getChildren().add(label3); specificationPanel.getChildren().add(label4);
-        }
-        if (object instanceof CivilianAirport || object instanceof MilitaryAirport){
+        if (object instanceof PassengerAircraft) {
+            try {
+                createLabelsForAircraft(object);
+                Label passengersLabel = createLabel(("Maximum amount of passengers: " + ((PassengerAircraft) object).getMaximumAmountOfPassengers()) + "\n" +
+                        ("(Current amount of passengers: " + ((PassengerAircraft) object).getCurrentAmountOfPassengers()), "bg-1");
+                specificationPanel.getChildren().add(passengersLabel);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (object instanceof MilitaryAircraft) {
+            try {
+                createLabelsForAircraft(object);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Label typeOfArmsLabel = createLabel(("Type of arms: " + ((MilitaryAircraft) object).getTypeOfArms()), "bg-1");
+            specificationPanel.getChildren().add(typeOfArmsLabel);
+        } else if (object instanceof PassengerShip) {
+            try {
+                createLabelsForShip(object);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else if (object instanceof MilitaryShip) {
+            try {
+                createLabelsForShip(object);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            Label label5 = createLabel(("Type of arms: " + ((MilitaryShip) object).getTypeOfArms()), "bg-1");
+            specificationPanel.getChildren().add(label5);
+        } else if (object instanceof CivilianAirport || object instanceof MilitaryAirport) {
             Pair<IntegerProperty, IntegerProperty> coordinates = ((Airport) object).getCoordinates();
-            Label label1 = createLabel(("Airport Name: " + ((Airport) object).getName()) + " Airport", "bg-1");
-            Label label2 = createLabel(("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")", "bg-1");
-            Label label3 = createLabel(("Current serviced aircraft: " + ((Airport) object).getCurrentServicedAircraft()), "bg-1");
-            specificationPanel.getChildren().add(label1); specificationPanel.getChildren().add(label2);
-            specificationPanel.getChildren().add(label3);
+            Label airportLabel = createLabel(("Airport Name: " + ((Airport) object).getName()) + " Airport" + "\n" +
+                    ("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")" + "\n" +
+                    ("Current serviced aircraft: " + ((Airport) object).getCurrentServicedAircraft()), "bg-1");
+            specificationPanel.getChildren().add(airportLabel);
         }
         BorderPane.setAlignment(specificationPanel, Pos.CENTER);
         borderPane.setCenter(specificationPanel);
         specificationPanel.setMinSize(245, 350);
     }
 
-    private void addAirportsToComboBox(boolean isCivil){
-        List<Airport> listOfAirports = controlPanel.getListOfAirports();
-        if (listOfAirports.isEmpty()){
+    private void addAirportsToComboBox(boolean isCivil) {
+        List<Airport> listOfAirports = controller.getListOfAirports();
+        if (listOfAirports.isEmpty()) {
             return;
         }
-        if (isCivil){
-            for(Airport airport: controlPanel.getListOfAirports()){
+        if (isCivil) {
+            for (Airport airport : controller.getListOfAirports()) {
                 if (airport instanceof CivilianAirport)
                     airportComboBox.getItems().add(airport.getName());
             }
-        }
-        else{
-            for(Airport airport: controlPanel.getListOfAirports()){
+        } else {
+            for (Airport airport : controller.getListOfAirports()) {
                 if (airport instanceof MilitaryAirport)
                     airportComboBox.getItems().add(airport.getName());
             }
@@ -226,45 +268,47 @@ public class ControlPanelView implements EventHandler {
 
     }
 
-    private TreeView<Entity> createTreeView(){
-        // Root
+    private TreeView<Node> createTreeView() {
         treeRoot.setExpanded(true);
 
-        aircrafts = makeBranch(treeRoot, aircrafts);
-        addBranchesToRoot(controlPanel.getListOfAircrafts(), aircrafts);
+        createMainBranches();
 
-            // Ships
-        ships = makeBranch(treeRoot, ships);
-        addBranchesToRoot(controlPanel.getListOfShips(), ships);
-
-            // Airports
-        airports = makeBranch(treeRoot, airports);
-        addBranchesToRoot(controlPanel.getListOfAirports(), airports);
-
-        // Create tree
         treeView = new TreeView<>(treeRoot);
         treeView.setShowRoot(false);
 
-        treeView.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
-            System.out.println(newValue.getValue());
-                try {
-                    initializeSpecificationPanel(newValue.getValue());
-                }catch (Exception e){
-                    e.printStackTrace();
-                }
-        }));
+        attachListenerToTreeView();
 
         return treeView;
     }
 
-    private <T> TreeItem<T> createTreeItem(T object){
+    private void createMainBranches() {
+        aircrafts = makeBranch(treeRoot, aircrafts);
+        addBranchesToRoot(controller.getListOfAircrafts(), aircrafts);
+        ships = makeBranch(treeRoot, ships);
+        addBranchesToRoot(controller.getListOfShips(), ships);
+        airports = makeBranch(treeRoot, airports);
+        addBranchesToRoot(controller.getListOfAirports(), airports);
+    }
+
+    private void attachListenerToTreeView() {
+        treeView.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
+            System.out.println(newValue.getValue());
+            try {
+                initializeSpecificationPanel(newValue.getValue());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }));
+    }
+
+    private <T> TreeItem<T> createTreeItem(T object) {
         TreeItem<T> treeItem = new TreeItem<>(object);
         return treeItem;
     }
 
-    private <T> void addBranchesToRoot(List<T> items, TreeItem<Entity> root){
-        for (T item: items) {
-            TreeItem<Entity> treeItem = (TreeItem<Entity>) createTreeItem(item);
+    private <T> void addBranchesToRoot(List<T> items, TreeItem<Node> root) {
+        for (T item : items) {
+            TreeItem<Node> treeItem = (TreeItem<Node>) createTreeItem(item);
             makeBranch(root, treeItem);
         }
     }
@@ -275,7 +319,7 @@ public class ControlPanelView implements EventHandler {
         return item;
     }
 
-    private static Label createLabel(String text, String styleClass){
+    private static Label createLabel(String text, String styleClass) {
         Label label = new Label(text);
         label.getStyleClass().add(styleClass);
         BorderPane.setMargin(label, new Insets(5));
@@ -283,7 +327,7 @@ public class ControlPanelView implements EventHandler {
         return label;
     }
 
-    private void setVehiclePanelForPassengerAircraft(){
+    private void setVehiclePanelForPassengerAircraft() {
         resetVehiclePanel();
         vehiclePanel.getChildren().add(1, airportComboBox);
         vehiclePanel.getChildren().add(2, maximumAmountOfPassengersTextField);
@@ -293,7 +337,7 @@ public class ControlPanelView implements EventHandler {
         submitButton.setOnAction(this);
     }
 
-    private void setVehiclePanelForMilitaryAircraft(){
+    private void setVehiclePanelForMilitaryAircraft() {
         resetVehiclePanel();
         vehiclePanel.getChildren().add(1, airportComboBox);
         vehiclePanel.getChildren().add(2, typeOfArmsComboBox);
@@ -301,7 +345,7 @@ public class ControlPanelView implements EventHandler {
         vehiclePanel.getChildren().add(4, submitButton);
     }
 
-    private void setVehiclePanelForPassengerShip(){
+    private void setVehiclePanelForPassengerShip() {
         resetVehiclePanel();
         vehiclePanel.getChildren().add(1, firmNamesComboBox);
         vehiclePanel.getChildren().add(2, maximumAmountOfPassengersTextField);
@@ -309,75 +353,104 @@ public class ControlPanelView implements EventHandler {
         vehiclePanel.getChildren().add(4, submitButton);
     }
 
-    private void setVehiclePanelForMilitaryShip(){
+    private void setVehiclePanelForMilitaryShip() {
         resetVehiclePanel();
         vehiclePanel.getChildren().add(1, typeOfArmsComboBox);
         vehiclePanel.getChildren().add(2, submitButton);
     }
 
-    private <T> T getSelectedValue(ComboBox<T> comboBox){
+    private <T> T getSelectedValue(ComboBox<T> comboBox) {
         return comboBox.getValue();
     }
 
-    private Airport getAirport(String string){
-        for (Airport item: controlPanel.getListOfAirports()){
-            if (item.getName().equals(string)){
+    private Airport getAirport(String string) {
+        for (Airport item : controller.getListOfAirports()) {
+            if (item.getName().equals(string)) {
                 return item;
             }
         }
         return null;
     }
 
-    private void temp(){
-        if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Aircraft")){
-            Airport selectedAirport = getAirport(getSelectedValue(airportComboBox));
+    private void createAircraftObject() {
+        Airport selectedAirport = getAirport(getSelectedValue(airportComboBox));
+        if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Aircraft")) {
             try {
                 Aircraft aircraft = selectedAirport.createAircraft(selectedAirport.getCoordinates(),
                         Integer.parseInt(maximumAmountOfPassengersTextField.getText()),
                         new SimpleIntegerProperty(Integer.parseInt(currentOfPassengersTextField.getText())),
-                        controlPanel.addId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),
+                        controller.addId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),
                         Integer.parseInt(amountOfStaffTextField.getText()), selectedAirport, null, null);
-
-                controlPanel.addAircraftToListOfAircrafts(aircraft);
-                makeBranch( aircrafts, new TreeItem<Entity>(aircraft));
-            } catch (Exception e){
+                controller.addAircraftToListOfAircrafts(aircraft);
+                makeBranch(aircrafts, new TreeItem<Node>(aircraft));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+        }
+        if (getSelectedValue(chooseVehicleComboBox).equals("Military Aircraft")) {
+            // TODO naprawić błąd tworzenia pojazdu
+            try {
+                Aircraft aircraft = selectedAirport.createAircraft(selectedAirport.getCoordinates(),
+                        controller.addId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),
+                        Integer.parseInt(amountOfStaffTextField.getText()), selectedAirport, null, null,
+                        typesOfArms.valueOf(typeOfArmsComboBox.getValue()));
+                controller.addAircraftToListOfAircrafts(aircraft);
+                makeBranch(aircrafts, new TreeItem<Node>(aircraft));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
+    private void createPassengerShipObject() {
+        try {
+            PassengerShip passengerShip = new PassengerShip(new Pair<>(new SimpleIntegerProperty(0), new SimpleIntegerProperty(0)),
+                    controller.addId(), Integer.parseInt(maximumAmountOfPassengersTextField.getText()),
+                    new SimpleIntegerProperty(Integer.parseInt(currentOfPassengersTextField.getText())),
+                    FirmNames.valueOf(firmNamesComboBox.getSelectionModel().getSelectedItem()), 1);
+            controller.addShipToListOfShips(passengerShip);
+            makeBranch(ships, new TreeItem<Node>(passengerShip));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
 
     @Override
-    public void handle(Event event){
-        if (event.getSource() == submitButton){
-            temp();
-            System.out.println("Event: submitButton works!");
+    public void handle(Event event) {
+        if (event.getSource() == submitButton) {
+            if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Aircraft") || getSelectedValue(chooseVehicleComboBox).equals("Military Aircraft")) {
+                createAircraftObject();
+            }
+            else {
+                createPassengerShipObject();
+            }
             resetVehiclePanel();
             chooseVehicleComboBox.getSelectionModel().select("Select Vehicle");
+            System.out.println("Event: submitButton works!");
         }
 
-        if (event.getSource() == chooseVehicleComboBox){
-            System.out.println("Event: chooseVehicleComboBox works!");
-            if (chooseVehicleComboBox.getValue().equals("Passenger Aircraft")){
+        if (event.getSource() == chooseVehicleComboBox) {
+            System.out.println("Event: chooseVehicleComboBox works! Current value equals: " + chooseVehicleComboBox.getValue() + "\n");
+            if (chooseVehicleComboBox.getValue().equals("Passenger Aircraft")) {
                 initializeAirportComboBox(true);
                 setVehiclePanelForPassengerAircraft();
                 chooseVehicleComboBox.getSelectionModel().select("Passenger Aircraft");
             }
-            if (chooseVehicleComboBox.getValue().equals("Military Aircraft")){
+            if (chooseVehicleComboBox.getValue().equals("Military Aircraft")) {
                 initializeAirportComboBox(false);
                 setVehiclePanelForMilitaryAircraft();
                 chooseVehicleComboBox.getSelectionModel().select("Military Aircraft");
             }
-            if (chooseVehicleComboBox.getValue().equals("Passenger Ship")){
+            if (chooseVehicleComboBox.getValue().equals("Passenger Ship")) {
                 setVehiclePanelForPassengerShip();
                 chooseVehicleComboBox.getSelectionModel().select("Passenger Ship");
             }
-            if (chooseVehicleComboBox.getValue().equals("Military Ship")){
+            if (chooseVehicleComboBox.getValue().equals("Military Ship")) {
                 setVehiclePanelForMilitaryShip();
                 chooseVehicleComboBox.getSelectionModel().select("Military Ship");
             }
-            if (chooseVehicleComboBox.getValue().equals("Select Vehicle")){
+            if (chooseVehicleComboBox.getValue().equals("Select Vehicle")) {
                 resetVehiclePanel();
                 chooseVehicleComboBox.getSelectionModel().select("Select Vehicle");
             }

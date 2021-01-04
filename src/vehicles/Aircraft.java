@@ -7,11 +7,11 @@ import other.TravelRoute;
 import ports.Airport;
 import javafx.util.Pair;
 import enumerates.typesOfArms;
+
 import java.util.List;
 
-public abstract class Aircraft extends Vehicle implements Runnable{
+public abstract class Aircraft extends Vehicle implements Runnable {
 
-    // Variables
     private IntegerProperty maximumAmountOfFuel = new SimpleIntegerProperty(this, "maximumAmountOfFuel");
     private IntegerProperty currentAmountOfFuel = new SimpleIntegerProperty(this, "currentAmountOfFuel");
     private int amountOfStaff;
@@ -19,9 +19,6 @@ public abstract class Aircraft extends Vehicle implements Runnable{
     private Airport lastVisitedAirport;
     private Airport nextAirport;
     private TravelRoute travelRoute = new TravelRoute();
-
-
-    // Constructors
 
     public Aircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
         super(coordinates, id);
@@ -35,8 +32,6 @@ public abstract class Aircraft extends Vehicle implements Runnable{
 
     public Aircraft() {
     }
-
-    // Getters and Setters
 
     public int getMaximumAmountOfFuel() {
         return maximumAmountOfFuel.get();
@@ -94,23 +89,70 @@ public abstract class Aircraft extends Vehicle implements Runnable{
         this.travelRoute = travelRoute;
     }
 
-    // Methods
-
-    public void land(){
+    public void land() {
 
     }
 
-    public void startFlight(){}
+    private boolean checkIfInRange(int bound, int x) {
+        if (bound < 0) {
+            return x > bound && x < (bound * (-1));
+        }
+        return x < bound && x > (bound * (-1));
+    }
 
-    public void tankUp(){}
+    public void fly() {
+        int nextAirportX = nextAirport.getCoordinates().getKey().get();
+        int nextAirportY = nextAirport.getCoordinates().getValue().get();
+        int myX = this.getCoordinates().getKey().get();
+        int myY = this.getCoordinates().getValue().get();
 
-    public void changePassengers(){}
+        Pair<Integer, Integer> velocityVector = new Pair<>((nextAirportX - myX) / 10, (nextAirportY - myY) / 10);
 
-    public void reportGlitch(){}
-    // Optymalizacja nazwy z crashLanding na emergencyLanding
-    public void emergencyLanding(){}
+        int i = 0;
+        while (!nextAirport.getCoordinates().equals(this.getCoordinates())) {
+            if ((checkIfInRange(velocityVector.getKey(), nextAirportX - this.getCoordinates().getKey().get())) && (
+                    checkIfInRange(velocityVector.getValue(), nextAirportY - this.getCoordinates().getValue().get()))) {
+                this.setCoordinates(nextAirport.getCoordinates());
+                break;
+            }
 
-    public void stayInQueue(){}
+            this.setCoordinates(new Pair<IntegerProperty, IntegerProperty>(
+                    new SimpleIntegerProperty((this.getCoordinates().getKey().get() + velocityVector.getKey())),
+                    new SimpleIntegerProperty((this.getCoordinates().getValue().get() + velocityVector.getValue()))));
+            System.out.println("(" + this.getCoordinates().getKey().get() + ", " + this.getCoordinates().getValue().get() + ")");
+
+            i++;
+            if (i == 11) {
+                break;
+            }
+        }
+    }
+
+    public void tankUp() {
+    }
+
+    public void changePassengers() {
+    }
+
+    public void reportGlitch() {
+    }
+
+    public void emergencyLanding() {
+    }
+
+    public void stayInQueue() {
+    }
+
+    @Override
+    public String getInfo() {
+        return super.getInfo() + "\n" +
+                "Maximum amount of fuel: " + maximumAmountOfFuel.toString() + "\n" +
+                "Current amount of fuel: " + currentAmountOfFuel.toString() + "\n" +
+                "Travel route: " + travelRoute.toString() + "\n" +
+                "Last visited airport: " + lastVisitedAirport.toString() + "\n" +
+                "Next airport: " + nextAirport.toString() + "\n" +
+                "Amount of staff: " + amountOfStaff;
+    }
 
     @Override
     public String toString() {
