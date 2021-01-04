@@ -10,17 +10,21 @@ import javafx.scene.control.Tooltip;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
+import javafx.scene.shape.*;
 import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import enumerates.MyColors;
 import javafx.util.Pair;
+import other.Node;
 import other.TravelRoute;
 import ports.Airport;
 import ports.CivilianAirport;
+import ports.MilitaryAirport;
+import vehicles.*;
 
+import java.awt.*;
+import java.util.Collection;
 import java.util.List;
 
 public class MapPanelView {
@@ -72,6 +76,9 @@ public class MapPanelView {
             setImageView();
 
             drawAirports();
+            drawShips();
+            drawAircrafts();
+
             scaleImageView();
             drawTravelRoutes();
 
@@ -104,12 +111,17 @@ public class MapPanelView {
         }
     }
 
-    private String chooseColor(Airport airport) {
-        if (airport instanceof CivilianAirport) {
+    private <T extends Node> String chooseColor(T entity) {
+        if (entity instanceof CivilianAirport) {
             return String.valueOf(MyColors.darkBlueColor.hexCode);
-        } else {
+        } else if (entity instanceof MilitaryAirport) {
             return String.valueOf(MyColors.rubyRed.hexCode);
+        } else if (entity instanceof PassengerAircraft) {
+            return String.valueOf(MyColors.rajah.hexCode);
+        } else if (entity instanceof PassengerShip) {
+            return String.valueOf(MyColors.bluePantone.hexCode);
         }
+        return "#fffff";
     }
 
     private void drawAirport(Airport airport) {
@@ -146,10 +158,33 @@ public class MapPanelView {
         Tooltip.install(circle, ref.tooltip);
     }
 
-    private void drawPlane() {
+    private void drawAircraft(Aircraft aircraft) {
+        Pair<IntegerProperty, IntegerProperty> coordinates = aircraft.getCoordinates();
         Polygon triangle = new Polygon();
         triangle.getPoints().addAll(0.0, 0.0, 20.0, 10.0, 10.0, 20.0);
         root.getChildren().add(triangle);
+    }
+
+    private void drawAircrafts() {
+        for (Aircraft aircraft : controller.getListOfAircrafts()) {
+            drawAircraft(aircraft);
+        }
+    }
+
+    private void drawShip(Ship ship) {
+        Pair<IntegerProperty, IntegerProperty> coordinates = ship.getCoordinates();
+        Circle circle = new Circle();
+        circle.centerXProperty().bind(coordinates.getKey());
+        circle.centerYProperty().bind(coordinates.getValue());
+        circle.setRadius(3);
+        circle.setFill(Paint.valueOf(chooseColor(ship)));
+        root.getChildren().add(4, circle);
+    }
+
+    private void drawShips() {
+        for (Ship ship : controller.getListOfShips()) {
+            drawShip(ship);
+        }
     }
 
     private void drawTravelRoutes() {
@@ -171,6 +206,7 @@ public class MapPanelView {
                 line.endXProperty().bind(routeCheckpoints.get(index + 1).getKey());
                 line.endYProperty().bind(routeCheckpoints.get(index + 1).getValue());
             }
+            line.setStroke(Paint.valueOf("#FF0000"));
             root.getChildren().add(2, line);
         }
     }

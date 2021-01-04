@@ -1,5 +1,6 @@
 package graphicalUserInterface;
 
+import com.sun.media.jfxmediaimpl.platform.Platform;
 import enumerates.FirmNames;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -22,7 +23,6 @@ import enumerates.typesOfArms;
 import other.Node;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 
 import static java.lang.Integer.parseInt;
 
@@ -379,7 +379,7 @@ public class ControlPanelView implements EventHandler {
                 Aircraft aircraft = selectedAirport.createAircraft(selectedAirport.getCoordinates(),
                         Integer.parseInt(maximumAmountOfPassengersTextField.getText()),
                         new SimpleIntegerProperty(Integer.parseInt(currentOfPassengersTextField.getText())),
-                        controller.addId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),
+                        controller.assignId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),
                         Integer.parseInt(amountOfStaffTextField.getText()), selectedAirport, null, null);
                 controller.addAircraftToListOfAircrafts(aircraft);
                 makeBranch(aircrafts, new TreeItem<Node>(aircraft));
@@ -391,7 +391,7 @@ public class ControlPanelView implements EventHandler {
             // TODO naprawić błąd tworzenia pojazdu
             try {
                 Aircraft aircraft = selectedAirport.createAircraft(selectedAirport.getCoordinates(),
-                        controller.addId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),
+                        controller.assignId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),
                         Integer.parseInt(amountOfStaffTextField.getText()), selectedAirport, null, null,
                         typesOfArms.valueOf(typeOfArmsComboBox.getValue()));
                 controller.addAircraftToListOfAircrafts(aircraft);
@@ -404,10 +404,10 @@ public class ControlPanelView implements EventHandler {
 
     private void createPassengerShipObject() {
         try {
-            PassengerShip passengerShip = new PassengerShip(new Pair<>(new SimpleIntegerProperty(0), new SimpleIntegerProperty(0)),
-                    controller.addId(), Integer.parseInt(maximumAmountOfPassengersTextField.getText()),
-                    new SimpleIntegerProperty(Integer.parseInt(currentOfPassengersTextField.getText())),
-                    FirmNames.valueOf(firmNamesComboBox.getSelectionModel().getSelectedItem()), 1);
+            PassengerShip passengerShip = controller.createPassengerShip("0", "0",
+                    maximumAmountOfPassengersTextField.getText(),
+                    currentOfPassengersTextField.getText(),
+                    firmNamesComboBox.getSelectionModel().getSelectedItem(), "10", "1");
             controller.addShipToListOfShips(passengerShip);
             makeBranch(ships, new TreeItem<Node>(passengerShip));
         } catch (Exception e) {
@@ -455,6 +455,5 @@ public class ControlPanelView implements EventHandler {
                 chooseVehicleComboBox.getSelectionModel().select("Select Vehicle");
             }
         }
-
     }
 }

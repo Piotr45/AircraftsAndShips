@@ -8,7 +8,8 @@ public enum MyColors {
      asparagus("#92AA83"),
      nyanza("#E0EDC5"),
      rubyRed("#A41623"),
-     rajah("#FFB563");
+     rajah("#FFB563"),
+     bluePantone("#3423A6");
 
      public final String hexCode;
 

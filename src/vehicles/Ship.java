@@ -6,7 +6,7 @@ import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Pair;
 
-public abstract class Ship extends Vehicle{
+public abstract class Ship extends Vehicle {
 
     private int maximumAmountOfPassengers;
     private IntegerProperty currentAmountOfPassengers = new SimpleIntegerProperty(this, "currentAmountOfPassengers");
@@ -51,7 +51,8 @@ public abstract class Ship extends Vehicle{
         this.speed = speed;
     }
 
-    public void shuttle(){}
+    public void shuttle() {
+    }
 
     @Override
     public String getInfo() {

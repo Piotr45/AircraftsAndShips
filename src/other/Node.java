@@ -12,11 +12,8 @@ public class Node {
     private Pair<Integer, Integer> primeCoordinates = new Pair<>(0, 0);
 
     public Node(Pair<IntegerProperty, IntegerProperty> coordinates, String name) {
-        this.primeCoordinates = new Pair<>(coordinates.getKey().get(), coordinates.getValue().get());
-        setX(primeCoordinates.getKey() * Main.mapStage.getWidth() / Main.mapStage.getMaxWidth());
-        setY(primeCoordinates.getValue() * Main.mapStage.getHeight() / Main.mapStage.getMaxHeight());
+        init(coordinates);
         this.name = name;
-        attachListener();
     }
 
     public Node(String name) {
@@ -24,10 +21,17 @@ public class Node {
     }
 
     public Node(Pair<IntegerProperty, IntegerProperty> coordinates) {
-        this.coordinates = coordinates;
+        init(coordinates);
     }
 
     public Node() {
+    }
+
+    private void init(Pair<IntegerProperty, IntegerProperty> coordinates){
+        this.primeCoordinates = new Pair<>(coordinates.getKey().get(), coordinates.getValue().get());
+        setX(primeCoordinates.getKey() * Main.mapStage.getWidth() / Main.mapStage.getMaxWidth());
+        setY(primeCoordinates.getValue() * Main.mapStage.getHeight() / Main.mapStage.getMaxHeight());
+        attachListener();
     }
 
     private void attachListener() {

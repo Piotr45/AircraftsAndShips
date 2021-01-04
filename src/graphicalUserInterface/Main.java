@@ -1,15 +1,11 @@
 package graphicalUserInterface;
 
 import javafx.application.Application;
-import javafx.beans.property.SimpleIntegerProperty;
+import javafx.application.Platform;
+import javafx.event.EventHandler;
 import javafx.stage.Stage;
-import javafx.util.Pair;
+import javafx.stage.WindowEvent;
 import other.TravelRoute;
-import ports.Airport;
-import ports.CivilianAirport;
-import ports.MilitaryAirport;
-import vehicles.Aircraft;
-import vehicles.PassengerAircraft;
 
 public class Main extends Application {
 
@@ -18,6 +14,15 @@ public class Main extends Application {
     private double mapMaxHeight = mapMaxWidth / ratio;
 
     public static Stage mapStage = new Stage();
+    public static Controller controller;
+
+    static {
+        try {
+            controller = new Controller();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -25,38 +30,34 @@ public class Main extends Application {
         setMapStage();
         scaleMapStage();
 
-        Controller controller = new Controller();
+        TravelRoute travelWarsawNewYork = new TravelRoute();
+        travelWarsawNewYork.addCheckpointToList(controller.getListOfAirports().get(0).getCoordinates());
+        travelWarsawNewYork.addCheckpointToList(controller.getListOfAirports().get(1).getCoordinates());
+        //controller.addTravelRouteToListOfTravelRoutes(travelWarsawNewYork);
 
-        controller.getListOfIds().add(0);
-
-//        TravelRoute travelWarsawNewYork = new TravelRoute();
-//        travelWarsawNewYork.addCheckpointToList(airport1.getCoordinates());
-//        travelWarsawNewYork.addCheckpointToList(airport3.getCoordinates());
-//        controller.addTravelRouteToListOfTravelRoutes(travelWarsawNewYork);
+        for (TravelRoute travelRoute: controller.getListOfTravelRoutes()){
+            System.out.println(travelRoute.getCheckpoints().get(0).getValue().get());
+        }
 //
 //        Aircraft aircraft = new PassengerAircraft(airport1.getCoordinates(), 200, new SimpleIntegerProperty(100), controller.addId(),
 //                new SimpleIntegerProperty(100), new SimpleIntegerProperty(100), 20, airport1, airport3, null);
 //        controller.addAircraftToListOfAircrafts(aircraft);
 
-//        TravelRoute seeRouteExample = new TravelRoute();
-//        seeRouteExample.addCheckpointToList(new Pair<>(new SimpleIntegerProperty(100), new SimpleIntegerProperty(100)));
-//        seeRouteExample.addCheckpointToList(new Pair<>(new SimpleIntegerProperty(200), new SimpleIntegerProperty(100)));
-//        seeRouteExample.addCheckpointToList(new Pair<>(new SimpleIntegerProperty(200), new SimpleIntegerProperty(200)));
-//        seeRouteExample.addCheckpointToList(new Pair<>(new SimpleIntegerProperty(100), new SimpleIntegerProperty(200)));
-//        controller.addTravelRouteToListOfTravelRoutes(seeRouteExample);
-
         MapPanelView mapPanelView = new MapPanelView(mapStage, controller);
 
         //ControlPanelView controlPanelView = new ControlPanelView(primaryStage, controller);
+        runThreads();
+
+        setCloseEvent(primaryStage);
     }
 
     private void setMapStage() {
         mapStage.setWidth(mapMaxWidth * 0.9);
-        System.out.println(mapStage.getWidth());
-        mapStage.setHeight(mapMaxHeight* 0.9);
-        System.out.println(mapStage.getHeight());
+        mapStage.setHeight(mapMaxHeight * 0.9);
+
         mapStage.setMaxWidth(mapMaxWidth);
         mapStage.setMaxHeight(mapMaxHeight);
+
         mapStage.setMinWidth(mapMaxWidth * 0.9 * 0.6);
         mapStage.setMinHeight(mapMaxHeight * 0.9 * 0.6);
     }
@@ -71,8 +72,32 @@ public class Main extends Application {
         });
     }
 
+    public void runThreads(){
+        for (Thread thread : controller.getListOfThreads()) {
+            thread.start();
+        }
+    }
+
+    private void setCloseEvent(Stage primaryStage){
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent e) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+        mapStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent e) {
+                Platform.exit();
+                System.exit(0);
+            }
+        });
+    }
+
     public static void main(String[] args) {
         launch(args);
     }
+
 
 }
