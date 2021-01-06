@@ -2,7 +2,8 @@ package graphicalUserInterface;
 
 
 import enumerates.FirmNames;
-import javafx.beans.property.IntegerProperty;
+import javafx.animation.AnimationTimer;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Pair;
 import other.Node;
@@ -21,6 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.SortedMap;
 
 public class Controller {
 
@@ -58,7 +60,9 @@ public class Controller {
         return listOfTravelRoutes;
     }
 
-    public List<Thread> getListOfThreads() { return listOfThreads; }
+    public List<Thread> getListOfThreads() {
+        return listOfThreads;
+    }
 
     public int assignId() {
         int id = getListOfIds().get(listOfIds.size() - 1) + 1;
@@ -71,7 +75,7 @@ public class Controller {
 
     public PassengerShip createPassengerShip(String x, String y, String maximumAmountOfPassengers, String currentAmountOfPassengers, String firmName, String velocity, String travelRoute) throws InterruptedException {
         PassengerShip passengerShip = new PassengerShip(
-                new Pair<>(new SimpleIntegerProperty(Integer.parseInt(x)), new SimpleIntegerProperty(Integer.parseInt(y))),
+                new Pair<>(new SimpleDoubleProperty(Integer.parseInt(x)), new SimpleDoubleProperty(Integer.parseInt(y))),
                 assignId(), Integer.parseInt(maximumAmountOfPassengers), new SimpleIntegerProperty(Integer.parseInt(currentAmountOfPassengers)),
                 FirmNames.valueOf(firmName), Integer.parseInt(velocity), getListOfTravelRoutes().get(Integer.parseInt(travelRoute)));
         addShipToListOfShips(passengerShip);
@@ -114,7 +118,7 @@ public class Controller {
         listOfTravelRoutes.add(travelRoute);
     }
 
-    private void addThreadToListOfThreads(Thread thread){
+    private void addThreadToListOfThreads(Thread thread) {
         listOfThreads.add(thread);
     }
 
@@ -139,12 +143,12 @@ public class Controller {
     }
 
     private void createCivilianAirport(String name, int x, int y) {
-        Airport airport = new CivilianAirport(name, new Pair<>(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y)));
+        Airport airport = new CivilianAirport(name, new Pair<>(new SimpleDoubleProperty(x), new SimpleDoubleProperty(y)));
         addAirportToListOfAirports(airport);
     }
 
     private void createMilitaryAirport(String name, int x, int y) {
-        Airport airport = new MilitaryAirport(name, new Pair<>(new SimpleIntegerProperty(x), new SimpleIntegerProperty(y)));
+        Airport airport = new MilitaryAirport(name, new Pair<>(new SimpleDoubleProperty(x), new SimpleDoubleProperty(y)));
         addAirportToListOfAirports(airport);
     }
 
@@ -168,24 +172,24 @@ public class Controller {
             TravelRoute travelRoute = new TravelRoute();
             if (list.get(0).equals("A")) {
                 for (int index = 1; index < list.size(); index++) {
-                    travelRoute.addCheckpointToList(returnAirportCoordinates(list.get(index)));
+                    travelRoute.addCheckpointToList(returnAirportNode(list.get(index)));
                 }
             }
             if (list.get(0).equals("S")) {
                 for (int index = 1; index < list.size(); index += 2) {
-                    travelRoute.addCheckpointToList(
-                            new Node(new Pair<>(new SimpleIntegerProperty(Integer.parseInt(list.get(index))),
-                                    new SimpleIntegerProperty(Integer.parseInt(list.get(index + 1))))).getCoordinates());
+                        travelRoute.addCheckpointToList(
+                                new Node(new Pair<>(new SimpleDoubleProperty(Integer.parseInt(list.get(index))),
+                                        new SimpleDoubleProperty(Integer.parseInt(list.get(index + 1))))));
                 }
             }
             addTravelRouteToListOfTravelRoutes(travelRoute);
         }
     }
 
-    private Pair<IntegerProperty, IntegerProperty> returnAirportCoordinates(String airportName) {
+    private Node returnAirportNode(String airportName) {
         for (Airport airport : getListOfAirports()) {
             if (airport.toString().equals(airportName + " Airport")) {
-                return airport.getCoordinates();
+                return airport;
             }
         }
         return null;
@@ -224,9 +228,21 @@ public class Controller {
 
         @Override
         public void run() {
-            if (vehicle instanceof Ship) {
-                ((Ship) vehicle).shuttle();
-            }
+            AnimationTimer animationTimer = new AnimationTimer() {
+                final double deltaT = 0.03;
+                Node nextCheckpoint = new Node();
+
+                @Override
+                public void handle(long now) {
+                    nextCheckpoint = vehicle.getPositionOnRoute(nextCheckpoint);
+                    vehicle.moveTo(vehicle, deltaT, nextCheckpoint);
+                }
+            };
+            animationTimer.start();
+
+//            if (vehicle instanceof Ship) {
+//                ((Ship) vehicle).shuttle();
+//            }
         }
     }
 

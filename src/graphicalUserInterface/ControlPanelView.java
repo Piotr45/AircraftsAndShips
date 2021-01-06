@@ -2,6 +2,7 @@ package graphicalUserInterface;
 
 import com.sun.media.jfxmediaimpl.platform.Platform;
 import enumerates.FirmNames;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.event.Event;
@@ -183,7 +184,7 @@ public class ControlPanelView implements EventHandler {
     }
 
     private <T> void createLabelsForAircraft(T object) {
-        Pair<IntegerProperty, IntegerProperty> coordinates = ((Aircraft) object).getCoordinates();
+        Pair<DoubleProperty, DoubleProperty> coordinates = ((Aircraft) object).getCoordinates();
         Label specificationLabel = createLabel(("Maximum amount of fuel: " + ((Aircraft) object).getMaximumAmountOfFuel()) + "\n" +
                 ("Current amount of fuel: " + ((Aircraft) object).getCurrentAmountOfFuel()) + "\n" +
                 ("Amount of staff: " + ((Aircraft) object).getAmountOfStaff()) + "\n" +
@@ -195,7 +196,7 @@ public class ControlPanelView implements EventHandler {
     }
 
     private <T> void createLabelsForShip(T object) {
-        Pair<IntegerProperty, IntegerProperty> coordinates = ((Ship) object).getCoordinates();
+        Pair<DoubleProperty, DoubleProperty> coordinates = ((Ship) object).getCoordinates();
         Label specificationLabel = createLabel(("Firm name: " + ((PassengerShip) object).getFirmName()) + "\n" +
                 ("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")" + "\n" +
                 ("Maximum amount of passengers: " + ((Ship) object).getMaximumAmountOfPassengers()) + "\n" +
@@ -238,7 +239,7 @@ public class ControlPanelView implements EventHandler {
             Label label5 = createLabel(("Type of arms: " + ((MilitaryShip) object).getTypeOfArms()), "bg-1");
             specificationPanel.getChildren().add(label5);
         } else if (object instanceof CivilianAirport || object instanceof MilitaryAirport) {
-            Pair<IntegerProperty, IntegerProperty> coordinates = ((Airport) object).getCoordinates();
+            Pair<DoubleProperty, DoubleProperty> coordinates = ((Airport) object).getCoordinates();
             Label airportLabel = createLabel(("Airport Name: " + ((Airport) object).getName()) + " Airport" + "\n" +
                     ("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")" + "\n" +
                     ("Current serviced aircraft: " + ((Airport) object).getCurrentServicedAircraft()), "bg-1");
@@ -376,7 +377,7 @@ public class ControlPanelView implements EventHandler {
         Airport selectedAirport = getAirport(getSelectedValue(airportComboBox));
         if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Aircraft")) {
             try {
-                Aircraft aircraft = selectedAirport.createAircraft(selectedAirport.getCoordinates(),
+                Aircraft aircraft = selectedAirport.createAircraft((Pair<DoubleProperty, DoubleProperty>) selectedAirport.getCoordinates(),
                         Integer.parseInt(maximumAmountOfPassengersTextField.getText()),
                         new SimpleIntegerProperty(Integer.parseInt(currentOfPassengersTextField.getText())),
                         controller.assignId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),

@@ -2,6 +2,7 @@ package ports;
 
 import enumerates.typesOfArms;
 import interfaces.planeFactory;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import other.Node;
 import other.TravelRoute;
@@ -14,7 +15,7 @@ public class Airport extends Node implements planeFactory {
 
     private Aircraft currentServicedAircraft = null;
 
-    public Airport(String name, Pair<IntegerProperty, IntegerProperty> coordinates) {
+    public Airport(String name, Pair<DoubleProperty, DoubleProperty> coordinates) {
         super(coordinates, name);
     }
 
@@ -50,7 +51,7 @@ public class Airport extends Node implements planeFactory {
         return super.toString();
     }
 
-    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int maximumAmountOfPassengers,
+    public Aircraft createAircraft(Pair<DoubleProperty, DoubleProperty> coordinates, int maximumAmountOfPassengers,
                                    IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel,
                                    IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport,
                                    Airport nextAirport, TravelRoute travelRoute) {
@@ -58,7 +59,7 @@ public class Airport extends Node implements planeFactory {
     }
 
     @Override
-    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel,
+    public Aircraft createAircraft(Pair<DoubleProperty, DoubleProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel,
                                    IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport,
                                    Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
         return null;

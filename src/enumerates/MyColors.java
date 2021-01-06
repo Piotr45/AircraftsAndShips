@@ -9,7 +9,10 @@ public enum MyColors {
      nyanza("#E0EDC5"),
      rubyRed("#A41623"),
      rajah("#FFB563"),
-     bluePantone("#3423A6");
+     bluePantone("#3423A6"),
+     lightGrey("#D3D3D3"),
+     lightBlue("#add8e6"),
+     lightRed("#A62C2A");
 
      public final String hexCode;
 

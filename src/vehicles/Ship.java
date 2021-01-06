@@ -2,22 +2,22 @@ package vehicles;
 
 import enumerates.FirmNames;
 import enumerates.typesOfArms;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Pair;
+import other.TravelRoute;
 
 public abstract class Ship extends Vehicle {
 
     private int maximumAmountOfPassengers;
     private IntegerProperty currentAmountOfPassengers = new SimpleIntegerProperty(this, "currentAmountOfPassengers");
 
-    private int speed;
 
-    public Ship(Pair<IntegerProperty, IntegerProperty> coordinates, int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, int speed) {
-        super(coordinates, id);
+    public Ship(Pair<DoubleProperty, DoubleProperty> coordinates, int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, int speed, TravelRoute travelRoute) {
+        super(coordinates, id, speed, travelRoute);
         this.maximumAmountOfPassengers = maximumAmountOfPassengers;
         this.currentAmountOfPassengers = currentAmountOfPassengers;
-        this.speed = speed;
     }
 
     public Ship() {
@@ -43,14 +43,6 @@ public abstract class Ship extends Vehicle {
         this.currentAmountOfPassengers.set(currentAmountOfPassengers);
     }
 
-    public int getSpeed() {
-        return speed;
-    }
-
-    public void setSpeed(int speed) {
-        this.speed = speed;
-    }
-
     public void shuttle() {
     }
 
@@ -59,7 +51,7 @@ public abstract class Ship extends Vehicle {
         return super.getInfo() + "\n" +
                 "Maximum amount of passengers: " + maximumAmountOfPassengers + "\n" +
                 "Current amount of passengers: " + currentAmountOfPassengers + "\n" +
-                "Velocity of ship: " + speed;
+                "Velocity of ship: " + getVelocity();
     }
 
     @Override

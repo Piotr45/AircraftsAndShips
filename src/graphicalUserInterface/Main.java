@@ -7,6 +7,9 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import other.TravelRoute;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class Main extends Application {
 
     public static double ratio = 1900.0 / 974.0;
@@ -30,22 +33,14 @@ public class Main extends Application {
         setMapStage();
         scaleMapStage();
 
-        TravelRoute travelWarsawNewYork = new TravelRoute();
-        travelWarsawNewYork.addCheckpointToList(controller.getListOfAirports().get(0).getCoordinates());
-        travelWarsawNewYork.addCheckpointToList(controller.getListOfAirports().get(1).getCoordinates());
-        //controller.addTravelRouteToListOfTravelRoutes(travelWarsawNewYork);
-
-        for (TravelRoute travelRoute: controller.getListOfTravelRoutes()){
-            System.out.println(travelRoute.getCheckpoints().get(0).getValue().get());
-        }
-//
-//        Aircraft aircraft = new PassengerAircraft(airport1.getCoordinates(), 200, new SimpleIntegerProperty(100), controller.addId(),
-//                new SimpleIntegerProperty(100), new SimpleIntegerProperty(100), 20, airport1, airport3, null);
-//        controller.addAircraftToListOfAircrafts(aircraft);
 
         MapPanelView mapPanelView = new MapPanelView(mapStage, controller);
-
+//        System.out.println(controller.getListOfTravelRoutes().get(1).getCheckpoints());
+//        System.out.println(controller.getListOfTravelRoutes().get(1).getCheckpoints().get(1).equals(
+//                controller.getListOfTravelRoutes().get(1).getCheckpoints().get(5)
+//        ));
         //ControlPanelView controlPanelView = new ControlPanelView(primaryStage, controller);
+
         runThreads();
 
         setCloseEvent(primaryStage);

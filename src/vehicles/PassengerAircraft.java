@@ -1,5 +1,6 @@
 package vehicles;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.util.Pair;
@@ -12,7 +13,7 @@ public class PassengerAircraft extends Aircraft {
     private int maximumAmountOfPassengers;
     private IntegerProperty currentAmountOfPassengers = new SimpleIntegerProperty(this, "currentAmountOfPassengers");
 
-    public PassengerAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int maximumAmountOfPassengers,
+    public PassengerAircraft(Pair<DoubleProperty, DoubleProperty> coordinates, int maximumAmountOfPassengers,
                              IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel,
                              IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
         super(coordinates, id, maximumAmountOfFuel, currentAmountOfFuel, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
@@ -41,11 +42,6 @@ public class PassengerAircraft extends Aircraft {
 
     public void setCurrentAmountOfPassengers(int currentAmountOfPassengers) {
         this.currentAmountOfPassengers.set(currentAmountOfPassengers);
-    }
-
-    @Override
-    public void run() {
-
     }
 
     @Override

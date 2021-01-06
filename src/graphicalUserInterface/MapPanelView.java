@@ -1,5 +1,6 @@
 package graphicalUserInterface;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -125,7 +126,7 @@ public class MapPanelView {
     }
 
     private void drawAirport(Airport airport) {
-        Pair<IntegerProperty, IntegerProperty> coordinates = airport.getCoordinates();
+        Pair<DoubleProperty, DoubleProperty> coordinates = airport.getCoordinates();
 
         Circle circle = new Circle();
         circle.centerXProperty().bind(coordinates.getKey());
@@ -159,7 +160,7 @@ public class MapPanelView {
     }
 
     private void drawAircraft(Aircraft aircraft) {
-        Pair<IntegerProperty, IntegerProperty> coordinates = aircraft.getCoordinates();
+        Pair<DoubleProperty, DoubleProperty> coordinates = aircraft.getCoordinates();
         Polygon triangle = new Polygon();
         triangle.getPoints().addAll(0.0, 0.0, 20.0, 10.0, 10.0, 20.0);
         root.getChildren().add(triangle);
@@ -172,7 +173,7 @@ public class MapPanelView {
     }
 
     private void drawShip(Ship ship) {
-        Pair<IntegerProperty, IntegerProperty> coordinates = ship.getCoordinates();
+        Pair<DoubleProperty, DoubleProperty> coordinates = ship.getCoordinates();
         Circle circle = new Circle();
         circle.centerXProperty().bind(coordinates.getKey());
         circle.centerYProperty().bind(coordinates.getValue());
@@ -187,26 +188,47 @@ public class MapPanelView {
         }
     }
 
+    private boolean isItSeaRoute(TravelRoute travelRoute) {
+        if (controller.getListOfTravelRoutes().indexOf(travelRoute) == 1){
+            return true;
+        }
+        return false;
+    }
+
+    private boolean isItMilitaryRoute(TravelRoute travelRoute){
+        if (controller.getListOfTravelRoutes().indexOf(travelRoute) == 7 ||
+                controller.getListOfTravelRoutes().indexOf(travelRoute) == 8){
+            return true;
+        }
+        return false;
+    }
+
     private void drawTravelRoutes() {
         for (TravelRoute travelRoute : controller.getListOfTravelRoutes()) {
-            drawTravelRoute(travelRoute);
+            if (isItSeaRoute(travelRoute)) {
+                drawTravelRoute(travelRoute, MyColors.lightBlue.hexCode);
+            } else if (isItMilitaryRoute(travelRoute)){
+                drawTravelRoute(travelRoute, MyColors.lightRed.hexCode);
+            } else {
+                drawTravelRoute(travelRoute, MyColors.lightGrey.hexCode);
+            }
         }
     }
 
-    private void drawTravelRoute(TravelRoute travelRoute) {
-        List<Pair<IntegerProperty, IntegerProperty>> routeCheckpoints = travelRoute.getCheckpoints();
+    private void drawTravelRoute(TravelRoute travelRoute, String color) {
+        List<Node> routeCheckpoints = travelRoute.getCheckpoints();
         for (int index = 0; index < routeCheckpoints.size(); index++) {
             Line line = new Line();
-            line.startXProperty().bind(routeCheckpoints.get(index).getKey());
-            line.startYProperty().bind(routeCheckpoints.get(index).getValue());
+            line.startXProperty().bind(routeCheckpoints.get(index).getCoordinates().getKey());
+            line.startYProperty().bind(routeCheckpoints.get(index).getCoordinates().getValue());
             if (index == routeCheckpoints.size() - 1) {
-                line.endXProperty().bind(routeCheckpoints.get(0).getKey());
-                line.endYProperty().bind(routeCheckpoints.get(0).getValue());
+                line.endXProperty().bind(routeCheckpoints.get(0).getCoordinates().getKey());
+                line.endYProperty().bind(routeCheckpoints.get(0).getCoordinates().getValue());
             } else {
-                line.endXProperty().bind(routeCheckpoints.get(index + 1).getKey());
-                line.endYProperty().bind(routeCheckpoints.get(index + 1).getValue());
+                line.endXProperty().bind(routeCheckpoints.get(index + 1).getCoordinates().getKey());
+                line.endYProperty().bind(routeCheckpoints.get(index + 1).getCoordinates().getValue());
             }
-            line.setStroke(Paint.valueOf("#FF0000"));
+            line.setStroke(Paint.valueOf(color));
             root.getChildren().add(2, line);
         }
     }

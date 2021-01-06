@@ -1,5 +1,6 @@
 package vehicles;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -10,7 +11,7 @@ import enumerates.typesOfArms;
 
 import java.util.List;
 
-public abstract class Aircraft extends Vehicle implements Runnable {
+public abstract class Aircraft extends Vehicle{
 
     private IntegerProperty maximumAmountOfFuel = new SimpleIntegerProperty(this, "maximumAmountOfFuel");
     private IntegerProperty currentAmountOfFuel = new SimpleIntegerProperty(this, "currentAmountOfFuel");
@@ -18,16 +19,14 @@ public abstract class Aircraft extends Vehicle implements Runnable {
     //TODO aktualizuj lotniska
     private Airport lastVisitedAirport;
     private Airport nextAirport;
-    private TravelRoute travelRoute = new TravelRoute();
 
-    public Aircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
-        super(coordinates, id);
+    public Aircraft(Pair<DoubleProperty, DoubleProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
+        super(coordinates, id, 10, travelRoute);
         this.maximumAmountOfFuel = maximumAmountOfFuel;
         this.currentAmountOfFuel = currentAmountOfFuel;
         this.amountOfStaff = amountOfStaff;
         this.lastVisitedAirport = lastVisitedAirport;
         this.nextAirport = nextAirport;
-        this.travelRoute = travelRoute;
     }
 
     public Aircraft() {
@@ -81,14 +80,6 @@ public abstract class Aircraft extends Vehicle implements Runnable {
         this.nextAirport = nextAirport;
     }
 
-    public TravelRoute getTravelRoute() {
-        return travelRoute;
-    }
-
-    public void setTravelRoute(TravelRoute travelRoute) {
-        this.travelRoute = travelRoute;
-    }
-
     public void land() {
 
     }
@@ -101,31 +92,31 @@ public abstract class Aircraft extends Vehicle implements Runnable {
     }
 
     public void fly() {
-        int nextAirportX = nextAirport.getCoordinates().getKey().get();
-        int nextAirportY = nextAirport.getCoordinates().getValue().get();
-        int myX = this.getCoordinates().getKey().get();
-        int myY = this.getCoordinates().getValue().get();
-
-        Pair<Integer, Integer> velocityVector = new Pair<>((nextAirportX - myX) / 10, (nextAirportY - myY) / 10);
-
-        int i = 0;
-        while (!nextAirport.getCoordinates().equals(this.getCoordinates())) {
-            if ((checkIfInRange(velocityVector.getKey(), nextAirportX - this.getCoordinates().getKey().get())) && (
-                    checkIfInRange(velocityVector.getValue(), nextAirportY - this.getCoordinates().getValue().get()))) {
-                this.setCoordinates(nextAirport.getCoordinates());
-                break;
-            }
-
-            this.setCoordinates(new Pair<IntegerProperty, IntegerProperty>(
-                    new SimpleIntegerProperty((this.getCoordinates().getKey().get() + velocityVector.getKey())),
-                    new SimpleIntegerProperty((this.getCoordinates().getValue().get() + velocityVector.getValue()))));
-            System.out.println("(" + this.getCoordinates().getKey().get() + ", " + this.getCoordinates().getValue().get() + ")");
-
-            i++;
-            if (i == 11) {
-                break;
-            }
-        }
+//        int nextAirportX = nextAirport.getCoordinates().getKey().get();
+//        int nextAirportY = nextAirport.getCoordinates().getValue().get();
+//        int myX = this.getCoordinates().getKey().get();
+//        int myY = this.getCoordinates().getValue().get();
+//
+//        Pair<Integer, Integer> velocityVector = new Pair<>((nextAirportX - myX) / 10, (nextAirportY - myY) / 10);
+//
+//        int i = 0;
+//        while (!nextAirport.getCoordinates().equals(this.getCoordinates())) {
+//            if ((checkIfInRange(velocityVector.getKey(), nextAirportX - this.getCoordinates().getKey().get())) && (
+//                    checkIfInRange(velocityVector.getValue(), nextAirportY - this.getCoordinates().getValue().get()))) {
+//                this.setCoordinates(nextAirport.getCoordinates());
+//                break;
+//            }
+//
+//            this.setCoordinates(new Pair<IntegerProperty, IntegerProperty>(
+//                    new SimpleIntegerProperty((this.getCoordinates().getKey().get() + velocityVector.getKey())),
+//                    new SimpleIntegerProperty((this.getCoordinates().getValue().get() + velocityVector.getValue()))));
+//            System.out.println("(" + this.getCoordinates().getKey().get() + ", " + this.getCoordinates().getValue().get() + ")");
+//
+//            i++;
+//            if (i == 11) {
+//                break;
+//            }
+//        }
     }
 
     public void tankUp() {
@@ -148,7 +139,7 @@ public abstract class Aircraft extends Vehicle implements Runnable {
         return super.getInfo() + "\n" +
                 "Maximum amount of fuel: " + maximumAmountOfFuel.toString() + "\n" +
                 "Current amount of fuel: " + currentAmountOfFuel.toString() + "\n" +
-                "Travel route: " + travelRoute.toString() + "\n" +
+                "Travel route: " + getTravelRoute().toString() + "\n" +
                 "Last visited airport: " + lastVisitedAirport.toString() + "\n" +
                 "Next airport: " + nextAirport.toString() + "\n" +
                 "Amount of staff: " + amountOfStaff;

@@ -1,15 +1,17 @@
 package vehicles;
 
 import enumerates.typesOfArms;
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.util.Pair;
+import other.TravelRoute;
 
 public class MilitaryShip extends Ship {//implements planeFactory{
 
     private typesOfArms typeOfArms;
 
-    public MilitaryShip(Pair<IntegerProperty, IntegerProperty> coordinates, int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, String firmName, int speed, typesOfArms typeOfArms) {
-        super(coordinates, id, maximumAmountOfPassengers, currentAmountOfPassengers, speed);
+    public MilitaryShip(Pair<DoubleProperty, DoubleProperty> coordinates, int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, String firmName, int speed, typesOfArms typeOfArms, TravelRoute travelRoute) {
+        super(coordinates, id, maximumAmountOfPassengers, currentAmountOfPassengers, speed, travelRoute);
         this.typeOfArms = typeOfArms;
     }
 

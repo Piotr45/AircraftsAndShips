@@ -1,5 +1,6 @@
 package ports;
 
+import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.util.Pair;
 import other.TravelRoute;
@@ -8,7 +9,7 @@ import vehicles.PassengerAircraft;
 
 public class CivilianAirport extends Airport {
 
-    public CivilianAirport(String name, Pair<IntegerProperty, IntegerProperty> coordinates) {
+    public CivilianAirport(String name, Pair<DoubleProperty, DoubleProperty> coordinates) {
         super(name, coordinates);
     }
 
@@ -17,7 +18,7 @@ public class CivilianAirport extends Airport {
     }
 
     @Override
-    public Aircraft createAircraft(Pair<IntegerProperty, IntegerProperty> coordinates, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
+    public Aircraft createAircraft(Pair<DoubleProperty, DoubleProperty> coordinates, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
         return new PassengerAircraft(coordinates, maximumAmountOfPassengers, currentAmountOfPassengers, id, maximumAmountOfFuel, currentAmountOfFuel, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
     }
 
