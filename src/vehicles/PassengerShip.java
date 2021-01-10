@@ -15,9 +15,9 @@ public class PassengerShip extends Ship {
 
     private FirmNames firmName;
 
-    public PassengerShip(Pair<DoubleProperty, DoubleProperty> coordinates, int id, int maximumAmountOfPassengers,
-                         IntegerProperty currentAmountOfPassengers, FirmNames firmName, int speed, TravelRoute travelRoute) {
-        super(coordinates, id, maximumAmountOfPassengers, currentAmountOfPassengers, speed, travelRoute);
+    public PassengerShip(int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers,
+                         FirmNames firmName, int speed, TravelRoute travelRoute) {
+        super(id, maximumAmountOfPassengers, currentAmountOfPassengers, speed, travelRoute);
         this.firmName = firmName;
     }
 
@@ -32,20 +32,6 @@ public class PassengerShip extends Ship {
     public void setFirmName(FirmNames firmName) {
         this.firmName = firmName;
     }
-
-
-
-
-//    @Override
-//    public void shuttle() {
-//        System.out.println("X: " + this.getCoordinates().getKey().get() + " Y: " + this.getCoordinates().getValue().get());
-//
-//        MyVector normal = getTravelRoute().findNormal(this);
-//        this.getCoordinates().getKey().set(this.getCoordinates().getKey().get() + (int) normal.getX());
-//        this.getCoordinates().getValue().set(this.getCoordinates().getValue().get() + (int) normal.getY());
-//
-//        System.out.println("X: " + this.getCoordinates().getKey().get() + " Y: " + this.getCoordinates().getValue().get());
-//    }
 
     @Override
     public String getInfo() {

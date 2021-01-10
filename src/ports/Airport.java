@@ -11,8 +11,6 @@ import javafx.util.Pair;
 
 public class Airport extends Node implements planeFactory {
 
-    // Variables
-
     private Aircraft currentServicedAircraft = null;
 
     public Airport(String name, Pair<DoubleProperty, DoubleProperty> coordinates) {
@@ -26,8 +24,6 @@ public class Airport extends Node implements planeFactory {
     public Airport() {
     }
 
-    // Getters and Setters
-
     public Aircraft getCurrentServicedAircraft() {
         return currentServicedAircraft;
     }
@@ -36,7 +32,6 @@ public class Airport extends Node implements planeFactory {
         this.currentServicedAircraft = currentServicedAircraft;
     }
 
-    // Methods
 
     public void serviceAircraft(){}
 

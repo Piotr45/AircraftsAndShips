@@ -204,7 +204,7 @@ public class ControlPanelView implements EventHandler {
         specificationPanel.getChildren().add(specificationLabel);
     }
 
-    private <T> void initializeSpecificationPanel(T object) {
+    private <T extends Node> void initializeSpecificationPanel(T object) {
         specificationPanel = new VBox();
         specificationPanel.setPadding(new Insets(25));
         if (object instanceof PassengerAircraft) {
@@ -240,9 +240,10 @@ public class ControlPanelView implements EventHandler {
             specificationPanel.getChildren().add(label5);
         } else if (object instanceof CivilianAirport || object instanceof MilitaryAirport) {
             Pair<DoubleProperty, DoubleProperty> coordinates = ((Airport) object).getCoordinates();
-            Label airportLabel = createLabel(("Airport Name: " + ((Airport) object).getName()) + " Airport" + "\n" +
-                    ("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")" + "\n" +
-                    ("Current serviced aircraft: " + ((Airport) object).getCurrentServicedAircraft()), "bg-1");
+//            Label airportLabel = createLabel(("Airport Name: " + ((Airport) object).getName()) + " Airport" + "\n" +
+//                    ("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")" + "\n" +
+//                    ("Current serviced aircraft: " + ((Airport) object).getCurrentServicedAircraft()), "bg-1");
+            Label airportLabel = createLabel(((Airport) object).getInfo(), "bg-1");
             specificationPanel.getChildren().add(airportLabel);
         }
         BorderPane.setAlignment(specificationPanel, Pos.CENTER);
@@ -293,8 +294,10 @@ public class ControlPanelView implements EventHandler {
 
     private void attachListenerToTreeView() {
         treeView.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
-            System.out.println(newValue.getValue());
             try {
+                newValue.getValue().getCoordinates().getKey().addListener(((observable1, oldValue1, newValue1) -> {
+                    initializeSpecificationPanel(newValue.getValue());
+                }));
                 initializeSpecificationPanel(newValue.getValue());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -405,12 +408,14 @@ public class ControlPanelView implements EventHandler {
 
     private void createPassengerShipObject() {
         try {
-            PassengerShip passengerShip = controller.createPassengerShip("0", "0",
-                    maximumAmountOfPassengersTextField.getText(),
+            PassengerShip passengerShip = controller.createPassengerShip(maximumAmountOfPassengersTextField.getText(),
                     currentOfPassengersTextField.getText(),
                     firmNamesComboBox.getSelectionModel().getSelectedItem(), "10", "1");
             controller.addShipToListOfShips(passengerShip);
             makeBranch(ships, new TreeItem<Node>(passengerShip));
+            Main.mapPanelView.drawShip(passengerShip);
+            //TODO uruchom wątek
+            //controller.getListOfThreads().get(controller.getListOfThreads().size()-1).start();
         } catch (Exception e) {
             e.printStackTrace();
         }

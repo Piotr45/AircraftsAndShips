@@ -92,31 +92,7 @@ public abstract class Aircraft extends Vehicle{
     }
 
     public void fly() {
-//        int nextAirportX = nextAirport.getCoordinates().getKey().get();
-//        int nextAirportY = nextAirport.getCoordinates().getValue().get();
-//        int myX = this.getCoordinates().getKey().get();
-//        int myY = this.getCoordinates().getValue().get();
-//
-//        Pair<Integer, Integer> velocityVector = new Pair<>((nextAirportX - myX) / 10, (nextAirportY - myY) / 10);
-//
-//        int i = 0;
-//        while (!nextAirport.getCoordinates().equals(this.getCoordinates())) {
-//            if ((checkIfInRange(velocityVector.getKey(), nextAirportX - this.getCoordinates().getKey().get())) && (
-//                    checkIfInRange(velocityVector.getValue(), nextAirportY - this.getCoordinates().getValue().get()))) {
-//                this.setCoordinates(nextAirport.getCoordinates());
-//                break;
-//            }
-//
-//            this.setCoordinates(new Pair<IntegerProperty, IntegerProperty>(
-//                    new SimpleIntegerProperty((this.getCoordinates().getKey().get() + velocityVector.getKey())),
-//                    new SimpleIntegerProperty((this.getCoordinates().getValue().get() + velocityVector.getValue()))));
-//            System.out.println("(" + this.getCoordinates().getKey().get() + ", " + this.getCoordinates().getValue().get() + ")");
-//
-//            i++;
-//            if (i == 11) {
-//                break;
-//            }
-//        }
+
     }
 
     public void tankUp() {

@@ -1,20 +1,27 @@
 package graphicalUserInterface;
 
+import com.sun.javafx.tk.Toolkit;
+import com.sun.scenario.animation.AbstractMasterTimer;
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import other.TravelRoute;
 
+import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Main extends Application {
 
     public static double ratio = 1900.0 / 974.0;
-    private double mapMaxWidth = 1760.0;
-    private double mapMaxHeight = mapMaxWidth / ratio;
+    public static double mapMaxWidth = 1760.0;
+    public static double mapMaxHeight = mapMaxWidth / ratio;
+    public static double initMapWidth = (int) mapMaxWidth * 0.9;
+    public static double initMapHeight = (int) initMapWidth / ratio;
 
     public static Stage mapStage = new Stage();
     public static Controller controller;
@@ -27,21 +34,42 @@ public class Main extends Application {
         }
     }
 
+    public static MapPanelView mapPanelView = new MapPanelView(mapStage, controller);
+    public static ControlPanelView controlPanelView;
+
     @Override
     public void start(Stage primaryStage) throws Exception {
-
+        mapStage.setResizable(false);
         setMapStage();
         scaleMapStage();
 
+        controlPanelView = new ControlPanelView(primaryStage, controller);
+        mapPanelView.showWindow();
 
-        MapPanelView mapPanelView = new MapPanelView(mapStage, controller);
-//        System.out.println(controller.getListOfTravelRoutes().get(1).getCheckpoints());
-//        System.out.println(controller.getListOfTravelRoutes().get(1).getCheckpoints().get(1).equals(
-//                controller.getListOfTravelRoutes().get(1).getCheckpoints().get(5)
-//        ));
-        //ControlPanelView controlPanelView = new ControlPanelView(primaryStage, controller);
+        //AbstractMasterTimer timer = Toolkit.getToolkit().getMasterTimer();
 
-        runThreads();
+        AnimationTimer animationTimer = new AnimationTimer() {
+            long delta;
+            long lastFrameTime;
+
+            @Override
+            public void handle(long now) {
+                delta = now - lastFrameTime;
+                lastFrameTime = now;
+                mapPanelView.resetUI();
+            }
+
+            public double getFrameRateHertz() {
+                double frameRate = 1d / delta;
+                return frameRate * 1e9;
+            }
+
+        };
+        animationTimer.start();
+
+//        Thread thread = new Thread(controller.getListOfShips().get(0));
+//        thread.setDaemon(true);
+//        thread.start();
 
         setCloseEvent(primaryStage);
     }
@@ -65,12 +93,6 @@ public class Main extends Application {
         mapStage.heightProperty().addListener((obs, oldVal, newVal) -> {
             mapStage.setWidth(newVal.doubleValue() * ratio);
         });
-    }
-
-    public void runThreads(){
-        for (Thread thread : controller.getListOfThreads()) {
-            thread.start();
-        }
     }
 
     private void setCloseEvent(Stage primaryStage){

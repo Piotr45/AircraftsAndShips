@@ -10,15 +10,14 @@ public class MilitaryShip extends Ship {//implements planeFactory{
 
     private typesOfArms typeOfArms;
 
-    public MilitaryShip(Pair<DoubleProperty, DoubleProperty> coordinates, int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, String firmName, int speed, typesOfArms typeOfArms, TravelRoute travelRoute) {
-        super(coordinates, id, maximumAmountOfPassengers, currentAmountOfPassengers, speed, travelRoute);
+    public MilitaryShip(int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, String firmName, int speed, typesOfArms typeOfArms, TravelRoute travelRoute) {
+        super(id, maximumAmountOfPassengers, currentAmountOfPassengers, speed, travelRoute);
         this.typeOfArms = typeOfArms;
     }
 
     public MilitaryShip() {
     }
 
-    // Methods
 
     public void launchNewMilitaryAircraft(){}
 

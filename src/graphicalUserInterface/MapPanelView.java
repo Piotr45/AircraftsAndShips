@@ -1,10 +1,6 @@
 package graphicalUserInterface;
 
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Tooltip;
@@ -24,8 +20,6 @@ import ports.CivilianAirport;
 import ports.MilitaryAirport;
 import vehicles.*;
 
-import java.awt.*;
-import java.util.Collection;
 import java.util.List;
 
 public class MapPanelView {
@@ -56,6 +50,9 @@ public class MapPanelView {
         this.mapWindow = mapWindow;
         this.controller = controller;
         mapWindow.setTitle("Map");
+        setMapWindow();
+        setImage();
+        setImageView();
         buildUI();
     }
 
@@ -68,24 +65,30 @@ public class MapPanelView {
         image = new Image("newMap.png");
     }
 
+    public void resetUI(){
+        pane = new StackPane();
+        root = new Group();
+        buildUI();
+    }
+
     private void buildUI() {
-        setMapWindow();
-        setImage();
         try {
             pane.getChildren().add(root);
 
-            setImageView();
-
+            drawTravelRoutes();
             drawAirports();
             drawShips();
             drawAircrafts();
 
             scaleImageView();
-            drawTravelRoutes();
+
+            root.getChildren().add(0, imageView);
 
             scene = new Scene(pane, initWidth, initHeight);
             mapWindow.setScene(scene);
-            mapWindow.show();
+
+            //TODO Show Window
+            //showWindow();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -93,12 +96,16 @@ public class MapPanelView {
 
     }
 
+    public void showWindow(){
+        mapWindow.show();
+    }
+
     private void setImageView() {
         imageView = new ImageView(image);
         imageView.setFitWidth(initWidth);
         imageView.setFitHeight(initHeight);
 
-        root.getChildren().add(0, imageView);
+        //root.getChildren().add(imageView);
     }
 
     private void scaleImageView() {
@@ -135,25 +142,25 @@ public class MapPanelView {
         circle.setRadius(5);
         circle.setFill(Paint.valueOf(chooseColor(airport)));
 
-        assignTooltipToAirport(airport, circle);
+        assignTooltipToNode(airport, circle);
 
-        root.getChildren().add(1, circle);
+        root.getChildren().add(circle);
 
     }
 
-    private void assignTooltipToAirport(Airport airport, Circle circle) {
+    private <T extends Node> void assignTooltipToNode(T node, Circle circle) {
         var ref = new Object() {
-            Tooltip tooltip = new Tooltip(airport.getInfo());
+            Tooltip tooltip = new Tooltip(node.getInfo());
         };
 
         mapWindow.widthProperty().addListener((obs, oldVal, newVal) -> {
             Tooltip.uninstall(circle, ref.tooltip);
-            ref.tooltip = new Tooltip(airport.getInfo());
+            ref.tooltip = new Tooltip(node.getInfo());
             Tooltip.install(circle, ref.tooltip);
         });
         mapWindow.heightProperty().addListener((obs, oldVal, newVal) -> {
             Tooltip.uninstall(circle, ref.tooltip);
-            ref.tooltip = new Tooltip(airport.getInfo());
+            ref.tooltip = new Tooltip(node.getInfo());
             Tooltip.install(circle, ref.tooltip);
         });
         Tooltip.install(circle, ref.tooltip);
@@ -172,24 +179,27 @@ public class MapPanelView {
         }
     }
 
-    private void drawShip(Ship ship) {
+    public void drawShip(Ship ship) {
         Pair<DoubleProperty, DoubleProperty> coordinates = ship.getCoordinates();
         Circle circle = new Circle();
         circle.centerXProperty().bind(coordinates.getKey());
         circle.centerYProperty().bind(coordinates.getValue());
         circle.setRadius(3);
         circle.setFill(Paint.valueOf(chooseColor(ship)));
-        root.getChildren().add(4, circle);
+        root.getChildren().add(circle);
     }
 
     private void drawShips() {
+        //System.out.println(controller.getListOfShips());
         for (Ship ship : controller.getListOfShips()) {
             drawShip(ship);
         }
     }
 
     private boolean isItSeaRoute(TravelRoute travelRoute) {
-        if (controller.getListOfTravelRoutes().indexOf(travelRoute) == 1){
+        if (controller.getListOfTravelRoutes().indexOf(travelRoute) == 1 ||
+                controller.getListOfTravelRoutes().indexOf(travelRoute) == 9 ||
+                controller.getListOfTravelRoutes().indexOf(travelRoute) == 10){
             return true;
         }
         return false;
@@ -219,6 +229,8 @@ public class MapPanelView {
         List<Node> routeCheckpoints = travelRoute.getCheckpoints();
         for (int index = 0; index < routeCheckpoints.size(); index++) {
             Line line = new Line();
+            line.setStroke(Paint.valueOf(color));
+
             line.startXProperty().bind(routeCheckpoints.get(index).getCoordinates().getKey());
             line.startYProperty().bind(routeCheckpoints.get(index).getCoordinates().getValue());
             if (index == routeCheckpoints.size() - 1) {
@@ -228,8 +240,17 @@ public class MapPanelView {
                 line.endXProperty().bind(routeCheckpoints.get(index + 1).getCoordinates().getKey());
                 line.endYProperty().bind(routeCheckpoints.get(index + 1).getCoordinates().getValue());
             }
-            line.setStroke(Paint.valueOf(color));
-            root.getChildren().add(2, line);
+
+            Circle circle = new Circle();
+            circle.centerXProperty().bind(routeCheckpoints.get(index).getCoordinates().getKey());
+            circle.centerYProperty().bind(routeCheckpoints.get(index).getCoordinates().getValue());
+            circle.setRadius(2);
+            circle.setFill(Paint.valueOf(color));
+
+            assignTooltipToNode(routeCheckpoints.get(index), circle);
+
+            root.getChildren().add(line);
+            root.getChildren().add(circle);
         }
     }
 

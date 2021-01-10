@@ -25,13 +25,19 @@ public class Node {
         init(coordinates);
     }
 
+    public Node(Pair<DoubleProperty, DoubleProperty> coordinates, int switcher) {
+        this.primeCoordinates = new Pair<>(coordinates.getKey().get(), coordinates.getValue().get());
+        this.coordinates = new Pair<>(new SimpleDoubleProperty(coordinates.getKey().get()), new SimpleDoubleProperty(coordinates.getValue().get()));
+        //attachListener();
+    }
+
     public Node() {
     }
 
     private void init(Pair<DoubleProperty, DoubleProperty> coordinates){
         this.primeCoordinates = new Pair<>(coordinates.getKey().get(), coordinates.getValue().get());
-        setX(primeCoordinates.getKey() * Main.mapStage.getWidth() / Main.mapStage.getMaxWidth());
-        setY(primeCoordinates.getValue() * Main.mapStage.getHeight() / Main.mapStage.getMaxHeight());
+        setX(primeCoordinates.getKey() * Main.initMapWidth/ Main.mapMaxWidth);
+        setY(primeCoordinates.getValue() * Main.initMapHeight / Main.mapMaxHeight);
         attachListener();
     }
 
@@ -68,10 +74,18 @@ public class Node {
         this.name = name;
     }
 
+    public static double round(double value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (double) tmp / factor;
+    }
 
     public String getInfo() {
-        return "Name: " + name + "\n" +
-                "Coordinates: (" + coordinates.getKey().get() + ", " + coordinates.getValue().get() + ")";
+        return "Name: " + this.name + "\n" +
+                "Coordinates: (" + round(this.coordinates.getKey().get(), 2) + ", " + round(this.coordinates.getValue().get(),2) + ")";
 
     }
 
