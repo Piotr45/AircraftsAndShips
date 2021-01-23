@@ -5,14 +5,18 @@ import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.util.Pair;
+import vehicles.Ship;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class Node {
 
-    private Pair<DoubleProperty, DoubleProperty> coordinates = new Pair<>(new SimpleDoubleProperty(0), new SimpleDoubleProperty(0));
+    private Pair<Double, Double> coordinates = new Pair<>(0.0, 0.0);
     private String name;
     private Pair<Double, Double> primeCoordinates = new Pair<>(0.0, 0.0);
 
-    public Node(Pair<DoubleProperty, DoubleProperty> coordinates, String name) {
+    public Node(Pair<Double, Double> coordinates, String name) {
         init(coordinates);
         this.name = name;
     }
@@ -27,17 +31,16 @@ public class Node {
 
     public Node(Pair<DoubleProperty, DoubleProperty> coordinates, int switcher) {
         this.primeCoordinates = new Pair<>(coordinates.getKey().get(), coordinates.getValue().get());
-        this.coordinates = new Pair<>(new SimpleDoubleProperty(coordinates.getKey().get()), new SimpleDoubleProperty(coordinates.getValue().get()));
+        this.coordinates = new Pair<>(coordinates.getKey().get(), coordinates.getValue().get());
         //attachListener();
     }
 
     public Node() {
     }
 
-    private void init(Pair<DoubleProperty, DoubleProperty> coordinates){
-        this.primeCoordinates = new Pair<>(coordinates.getKey().get(), coordinates.getValue().get());
-        setX(primeCoordinates.getKey() * Main.initMapWidth/ Main.mapMaxWidth);
-        setY(primeCoordinates.getValue() * Main.initMapHeight / Main.mapMaxHeight);
+    private void init(Pair<Double, Double> coordinates){
+        this.primeCoordinates = new Pair<>(coordinates.getKey(), coordinates.getValue());
+        this.coordinates = new Pair<>(primeCoordinates.getKey() * Main.initMapWidth/ Main.mapMaxWidth, primeCoordinates.getValue() * Main.initMapHeight / Main.mapMaxHeight)
         attachListener();
     }
 
@@ -59,11 +62,11 @@ public class Node {
     }
 
     public void setX(double value) {
-        coordinates.getKey().set((int) value);
+        //coordinates.getKey().set((int) value);
     }
 
     public void setY(double value) {
-        coordinates.getValue().set((int) value);
+        //coordinates.getValue().set((int) value);
     }
 
     public String getName() {
@@ -85,14 +88,14 @@ public class Node {
 
     public String getInfo() {
         return "Name: " + this.name + "\n" +
-                "Coordinates: (" + round(this.coordinates.getKey().get(), 2) + ", " + round(this.coordinates.getValue().get(),2) + ")";
+                "Coordinates: (" + round(this.coordinates.getKey(), 2) + ", " + round(this.coordinates.getValue(),2) + ")";
 
     }
 
     @Override
     public String toString() {
         if (name == null){
-            return "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get() + ")";
+            return "(" + coordinates.getKey() + ", " + coordinates.getValue() + ")";
         }
         else {
             return name;

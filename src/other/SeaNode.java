@@ -34,9 +34,11 @@ public class SeaNode extends Node{
         try {
             //System.out.println("\t\t" + this.getCoordinates());
             this.semaphore.acquire(1);
+            Thread.sleep(1000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
     }
 
     public Semaphore getSemaphore() {
@@ -60,6 +62,6 @@ public class SeaNode extends Node{
     }
 
     public void assignPermits(int number) throws InterruptedException {
-        semaphore.acquire(number);
+        semaphore = new Semaphore(number);
     }
 }

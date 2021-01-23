@@ -20,6 +20,7 @@ public abstract class Vehicle extends Node implements Runnable{
     private Node previousNode;
     private Node currentNode;
     private Node destinationNode;
+    private Thread thread;
 
     public Vehicle(Pair<DoubleProperty, DoubleProperty> coordinates, int id, int velocity, TravelRoute travelRoute) {
         super(coordinates);
@@ -41,6 +42,14 @@ public abstract class Vehicle extends Node implements Runnable{
     }
 
     public Vehicle() {
+    }
+
+    public Thread getThread() {
+        return thread;
+    }
+
+    public void setThread() {
+        this.thread = new Thread(this);
     }
 
     public int getId() {
@@ -105,7 +114,7 @@ public abstract class Vehicle extends Node implements Runnable{
         }
     }
 
-    public void move(double deltaT) {
+    public void move(double deltaT) throws InterruptedException {
         switch (this.state) {
             case traveling: {
                 if (moveTo(this, deltaT, getNode(getCoordinates(), getTravelRoute()))){
@@ -125,7 +134,11 @@ public abstract class Vehicle extends Node implements Runnable{
 
     @Override
     public void run() {
-        move(0.003);
+        try {
+            move(0.000001);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

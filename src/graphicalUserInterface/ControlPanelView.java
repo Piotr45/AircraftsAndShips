@@ -295,9 +295,9 @@ public class ControlPanelView implements EventHandler {
     private void attachListenerToTreeView() {
         treeView.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
             try {
-                newValue.getValue().getCoordinates().getKey().addListener(((observable1, oldValue1, newValue1) -> {
-                    initializeSpecificationPanel(newValue.getValue());
-                }));
+//                newValue.getValue().getCoordinates().getKey().addListener(((observable1, oldValue1, newValue1) -> {
+//                    initializeSpecificationPanel(newValue.getValue());
+//                }));
                 initializeSpecificationPanel(newValue.getValue());
             } catch (Exception e) {
                 e.printStackTrace();

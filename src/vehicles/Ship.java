@@ -1,6 +1,7 @@
 package vehicles;
 
 import enumerates.States;
+import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
@@ -74,16 +75,7 @@ public abstract class Ship extends Vehicle {
     }
 
     @Override
-    public void move(double deltaT){
-        try {
-            System.out.println(this.getState());
-            System.out.println("Previous:\t" + previousNode.getCoordinates() + "\n" +
-                    "Current:\t" + currentNode.getCoordinates() + "\n" + "Destination:\t" +
-                    destinationNode.getCoordinates() + "\nOur Position:\t" +this.getCoordinates());
-        } catch (Exception e) {
-            System.out.println("Current:\t" + currentNode.getCoordinates() + "\nDestination:\t" + destinationNode.getCoordinates() + "\nOur Position:\t" +this.getCoordinates());
-        }
-        System.out.println();
+    public void move(double deltaT) throws InterruptedException{
         switch (this.getState()) {
             case traveling:
                 if (moveTo(this, deltaT, destinationNode)){
@@ -97,11 +89,16 @@ public abstract class Ship extends Vehicle {
                     updateNodes();
                     setState(States.arriving);
                 } else {
-                    //System.out.println("Failed");
+                    Thread.sleep(100);
+                    System.out.println("Failed");
                 }
                 break;
             case arriving:
-                currentNode.occupy();
+                if (currentNode.getConnections().size() > 2) {
+                        System.out.println(currentNode.getConnections());
+                        currentNode.occupy();
+                }
+                //currentNode.occupy();
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException ignored) {}
@@ -113,8 +110,12 @@ public abstract class Ship extends Vehicle {
 
     @Override
     public void run() {
-        while(true) {
-            move(0.0005);
+        while (true) {
+            try {
+                move(0.00000025);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

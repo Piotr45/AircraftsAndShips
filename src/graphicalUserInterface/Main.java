@@ -10,6 +10,7 @@ import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import other.TravelRoute;
+import vehicles.Ship;
 
 import java.lang.annotation.Target;
 import java.util.ArrayList;
@@ -46,33 +47,17 @@ public class Main extends Application {
         controlPanelView = new ControlPanelView(primaryStage, controller);
         mapPanelView.showWindow();
 
-        //AbstractMasterTimer timer = Toolkit.getToolkit().getMasterTimer();
-
         AnimationTimer animationTimer = new AnimationTimer() {
-            long delta;
-            long lastFrameTime;
-
             @Override
             public void handle(long now) {
-                delta = now - lastFrameTime;
-                lastFrameTime = now;
                 mapPanelView.resetUI();
             }
-
-            public double getFrameRateHertz() {
-                double frameRate = 1d / delta;
-                return frameRate * 1e9;
-            }
-
         };
         animationTimer.start();
 
-//        Thread thread = new Thread(controller.getListOfShips().get(0));
-//        thread.setDaemon(true);
-//        thread.start();
-
         setCloseEvent(primaryStage);
     }
+
 
     private void setMapStage() {
         mapStage.setWidth(mapMaxWidth * 0.9);
@@ -99,6 +84,9 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent e) {
+                for (Ship ship : controller.getListOfShips()){
+                    ship.getThread().stop();
+                }
                 Platform.exit();
                 System.exit(0);
             }
@@ -106,6 +94,9 @@ public class Main extends Application {
         mapStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent e) {
+                for (Ship ship : controller.getListOfShips()){
+                    ship.getThread().stop();
+                }
                 Platform.exit();
                 System.exit(0);
             }

@@ -36,6 +36,7 @@ public class Controller{
     private List<Ship> listOfShips = new ArrayList<Ship>();
     private List<Integer> listOfIds = new ArrayList<>();
     private List<TravelRoute> listOfTravelRoutes = new ArrayList<>();
+    private List<TravelRoute> listOfSeaRoutes = new ArrayList<>();
 
     public Controller() throws InterruptedException {
         listOfIds.add(0);
@@ -77,9 +78,9 @@ public class Controller{
                 FirmNames.valueOf(firmName), Integer.parseInt(velocity), getListOfTravelRoutes().get(Integer.parseInt(travelRoute)));
         addShipToListOfShips(passengerShip);
 
-        Thread thread = new Thread(passengerShip);
-//        thread.setDaemon(true);
-        thread.start();
+        passengerShip.setThread();
+        passengerShip.getThread().setDaemon(true);
+        passengerShip.getThread().start();
         return passengerShip;
     }
 
@@ -205,8 +206,19 @@ public class Controller{
             }
             if (list.get(0).equals("S")) {
                 addNewSeaRouteFromStringList(travelRoute, list);
+                this.listOfSeaRoutes.add(travelRoute);
             }
             addTravelRouteToListOfTravelRoutes(travelRoute);
+        }
+    }
+    private void temp() throws InterruptedException {
+        for (TravelRoute travelRoute: this.listOfSeaRoutes){
+            for (Node node : travelRoute.getCheckpoints()) {
+                SeaNode xd = (SeaNode) node;
+                if (xd.getConnections().size() > 2){
+                    ((SeaNode) node).assignPermits(1);
+                }
+            }
         }
     }
 
