@@ -25,13 +25,13 @@ public class Node {
         this.name = name;
     }
 
-    public Node(Pair<DoubleProperty, DoubleProperty> coordinates) {
+    public Node(Pair<Double, Double> coordinates) {
         init(coordinates);
     }
 
-    public Node(Pair<DoubleProperty, DoubleProperty> coordinates, int switcher) {
-        this.primeCoordinates = new Pair<>(coordinates.getKey().get(), coordinates.getValue().get());
-        this.coordinates = new Pair<>(coordinates.getKey().get(), coordinates.getValue().get());
+    public Node(Pair<Double, Double> coordinates, int switcher) {
+        this.primeCoordinates = new Pair<>(coordinates.getKey(), coordinates.getValue());
+        this.coordinates = new Pair<>(coordinates.getKey(), coordinates.getValue());
         //attachListener();
     }
 
@@ -40,8 +40,9 @@ public class Node {
 
     private void init(Pair<Double, Double> coordinates){
         this.primeCoordinates = new Pair<>(coordinates.getKey(), coordinates.getValue());
-        this.coordinates = new Pair<>(primeCoordinates.getKey() * Main.initMapWidth/ Main.mapMaxWidth, primeCoordinates.getValue() * Main.initMapHeight / Main.mapMaxHeight)
-        attachListener();
+        this.coordinates = new Pair<>((double)((int) (primeCoordinates.getKey() * Main.initMapWidth/ Main.mapMaxWidth)),
+                (double)((int) (primeCoordinates.getValue() * Main.initMapHeight / Main.mapMaxHeight)));
+        //attachListener();
     }
 
     private void attachListener() {
@@ -53,11 +54,11 @@ public class Node {
         }));
     }
 
-    public Pair<DoubleProperty, DoubleProperty> getCoordinates() {
+    public Pair<Double, Double> getCoordinates() {
         return coordinates;
     }
 
-    public void setCoordinates(Pair<DoubleProperty, DoubleProperty> coordinates) {
+    public void setCoordinates(Pair<Double, Double> coordinates) {
         this.coordinates = coordinates;
     }
 

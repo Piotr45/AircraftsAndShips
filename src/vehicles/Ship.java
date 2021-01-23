@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.concurrent.Task;
+import javafx.util.Pair;
 import other.Node;
 import other.SeaNode;
 import other.TravelRoute;
@@ -18,7 +19,6 @@ public abstract class Ship extends Vehicle {
     private SeaNode destinationNode;
 
 
-
     public Ship(int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers,
                 int velocity, TravelRoute travelRoute) {
         super(id, velocity, travelRoute);
@@ -27,7 +27,6 @@ public abstract class Ship extends Vehicle {
         this.currentAmountOfPassengers = currentAmountOfPassengers;
         this.currentNode = (SeaNode) getNode(getCoordinates(), travelRoute);
         newDestinationBasedOnCurrent();
-        //System.out.println(currentNode.getCoordinates() + " " + destinationNode.getCoordinates());
     }
 
     public Ship() {
@@ -56,7 +55,7 @@ public abstract class Ship extends Vehicle {
     public void shuttle() {
     }
 
-    private void newDestinationBasedOnCurrent(){
+    private void newDestinationBasedOnCurrent() {
         int index = this.getTravelRoute().getCheckpoints().indexOf(this.currentNode) + 1;
         if (index == this.getTravelRoute().getCheckpoints().size() - 1) {
             this.destinationNode = (SeaNode) this.getTravelRoute().getCheckpoints().get(0);
@@ -67,41 +66,38 @@ public abstract class Ship extends Vehicle {
 
     @Override
     public void updateNodes() {
-        if (this.areCoordinatesTheSame(this.getCoordinates(), destinationNode.getCoordinates())) {
-            previousNode = (SeaNode) getNode(currentNode.getCoordinates(), this.getTravelRoute());
-            currentNode = (SeaNode) getNode(destinationNode.getCoordinates(), this.getTravelRoute());
-            newDestinationBasedOnCurrent();
-        }
+        //System.out.println(this.getCoordinates() + "\t" + destinationNode.getCoordinates());
+        //if (this.areCoordinatesTheSame(this.getCoordinates(), destinationNode.getCoordinates())) {
+        previousNode = (SeaNode) getNode(currentNode.getCoordinates(), this.getTravelRoute());
+        currentNode = (SeaNode) getNode(destinationNode.getCoordinates(), this.getTravelRoute());
+        newDestinationBasedOnCurrent();
+        //System.out.println("Prev: " + previousNode.getCoordinates() +" Curr: " + currentNode.getCoordinates() + " Dest: " + destinationNode.getCoordinates());
+        //System.exit(1);
+        //}
     }
 
     @Override
-    public void move(double deltaT) throws InterruptedException{
+    public void move(double deltaT) throws InterruptedException {
+        //System.out.println(this.getId() + " " + this.getState() + " " + destinationNode.getCoordinates());
         switch (this.getState()) {
             case traveling:
-                if (moveTo(this, deltaT, destinationNode)){
+                if (moveTo(this, deltaT, destinationNode)) {
                     this.setState(States.waiting);
                 }
                 break;
             case waiting:
-                if (destinationNode.isNodeFree()){
-                    setCoordinates(destinationNode.getCoordinates().getKey().get(),
-                            destinationNode.getCoordinates().getValue().get());
+                if (destinationNode.isNodeFree()) {
                     updateNodes();
                     setState(States.arriving);
                 } else {
-                    Thread.sleep(100);
+                    Thread.sleep(250);
                     System.out.println("Failed");
                 }
                 break;
             case arriving:
                 if (currentNode.getConnections().size() > 2) {
-                        System.out.println(currentNode.getConnections());
-                        currentNode.occupy();
+                    currentNode.occupy();
                 }
-                //currentNode.occupy();
-                try {
-                    Thread.sleep(100);
-                } catch (InterruptedException ignored) {}
                 currentNode.freeNode();
                 setState(States.traveling);
                 break;

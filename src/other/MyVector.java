@@ -32,9 +32,9 @@ public class MyVector {
         this.magnitude = magnitude;
     }
 
-    public MyVector(Pair<DoubleProperty, DoubleProperty> A, Pair<DoubleProperty, DoubleProperty> B) {
-        this.x = B.getKey().get() - A.getKey().get();
-        this.y = B.getValue().get() - A.getValue().get();
+    public MyVector(Pair<Double, Double> A, Pair<Double, Double> B) {
+        this.x = B.getKey() - A.getKey();
+        this.y = B.getValue() - A.getValue();
         recalculateMagnitude();
     }
 

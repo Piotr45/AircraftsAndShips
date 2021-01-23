@@ -20,7 +20,7 @@ public abstract class Aircraft extends Vehicle{
     private Airport lastVisitedAirport;
     private Airport nextAirport;
 
-    public Aircraft(Pair<DoubleProperty, DoubleProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
+    public Aircraft(Pair<Double, Double> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
         super(coordinates, id, 10, travelRoute);
         this.maximumAmountOfFuel = maximumAmountOfFuel;
         this.currentAmountOfFuel = currentAmountOfFuel;

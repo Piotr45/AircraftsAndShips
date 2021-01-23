@@ -11,8 +11,13 @@ public class TravelRoute {
 
     private List<Node> checkpoints = new ArrayList<>();
     private Random random = new Random();
+    private int id;
 
     public TravelRoute() {
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public List<Node> getCheckpoints() {
@@ -28,8 +33,12 @@ public class TravelRoute {
         do {
             randomNode = (SeaNode) checkpoints.get(random.nextInt(checkpoints.size()-1));
         }
-        while (!randomNode.isNodeFree());
+        while (!randomNode.isNodeFree2());
         return randomNode;
     }
 
+    @Override
+    public String toString() {
+        return "Travel route " + Integer.toString(this.id);
+    }
 }

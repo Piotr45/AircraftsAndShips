@@ -1,9 +1,6 @@
 package vehicles;
 
 import enumerates.States;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.Property;
 import javafx.concurrent.Task;
 import javafx.util.Pair;
 import other.MyVector;
@@ -11,7 +8,7 @@ import other.Node;
 import other.SeaNode;
 import other.TravelRoute;
 
-public abstract class Vehicle extends Node implements Runnable{
+public abstract class Vehicle extends Node implements Runnable {
 
     private int id;
     private States state;
@@ -22,7 +19,7 @@ public abstract class Vehicle extends Node implements Runnable{
     private Node destinationNode;
     private Thread thread;
 
-    public Vehicle(Pair<DoubleProperty, DoubleProperty> coordinates, int id, int velocity, TravelRoute travelRoute) {
+    public Vehicle(Pair<Double, Double> coordinates, int id, int velocity, TravelRoute travelRoute) {
         super(coordinates);
         this.id = id;
         this.state = States.traveling;
@@ -31,7 +28,7 @@ public abstract class Vehicle extends Node implements Runnable{
     }
 
     public Vehicle(int id, int velocity, TravelRoute travelRoute) {
-        super(travelRoute.getCheckpoints().get(0).getCoordinates(), 1);
+        super(travelRoute.findRandomCheckpoint().getCoordinates(), 1);
         this.id = id;
         this.velocity = velocity;
         this.travelRoute = travelRoute;
@@ -76,12 +73,12 @@ public abstract class Vehicle extends Node implements Runnable{
         return travelRoute;
     }
 
-    public Boolean areCoordinatesTheSame(Pair<DoubleProperty, DoubleProperty> pair1,
-                                         Pair<DoubleProperty, DoubleProperty> pair2) {
-        return pair1.getKey().get() == pair2.getKey().get() && pair1.getValue().get() == pair2.getValue().get();
+    public Boolean areCoordinatesTheSame(Pair<Double, Double> pair1,
+                                         Pair<Double, Double> pair2) {
+        return pair1.getKey() == pair2.getKey() && pair1.getValue() == pair2.getValue();
     }
 
-    public Node getNode(Pair<DoubleProperty, DoubleProperty> pair, TravelRoute travelRoute) {
+    public Node getNode(Pair<Double, Double> pair, TravelRoute travelRoute) {
         for (Node node : travelRoute.getCheckpoints()) {
             if (areCoordinatesTheSame(pair, node.getCoordinates())) {
                 return node;
@@ -93,11 +90,6 @@ public abstract class Vehicle extends Node implements Runnable{
     public void updateNodes() {
     }
 
-    public void setCoordinates(double x, double y) {
-        this.getCoordinates().getKey().set(x);
-        this.getCoordinates().getValue().set(y);
-    }
-
     public Boolean moveTo(Vehicle vehicle, double deltaT, Node nextCheckpoint) {
         MyVector vector = new MyVector(vehicle.getCoordinates(), nextCheckpoint.getCoordinates());
         MyVector normalizedVector = new MyVector(vector);
@@ -106,8 +98,8 @@ public abstract class Vehicle extends Node implements Runnable{
         normalizedVector.recalculateMagnitude();
 
         if (normalizedVector.getMagnitude() + 2 < vector.getMagnitude()) {
-            setCoordinates(this.getCoordinates().getKey().get() + normalizedVector.getX(),
-                    this.getCoordinates().getValue().get() + normalizedVector.getY());
+            this.setCoordinates(new Pair<>(this.getCoordinates().getKey() + normalizedVector.getX(),
+                    this.getCoordinates().getValue() + normalizedVector.getY()));
             return false;
         } else {
             return true;
@@ -117,7 +109,7 @@ public abstract class Vehicle extends Node implements Runnable{
     public void move(double deltaT) throws InterruptedException {
         switch (this.state) {
             case traveling: {
-                if (moveTo(this, deltaT, getNode(getCoordinates(), getTravelRoute()))){
+                if (moveTo(this, deltaT, getNode(getCoordinates(), getTravelRoute()))) {
                     setState(States.waiting);
                 }
             }

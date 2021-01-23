@@ -11,12 +11,12 @@ import other.TravelRoute;
 
 public class MilitaryAirport extends Airport implements planeFactory{
 
-    public MilitaryAirport(String name, Pair<DoubleProperty, DoubleProperty> coordinates) {
+    public MilitaryAirport(String name, Pair<Double, Double> coordinates) {
         super(name, coordinates);
     }
 
     @Override
-    public Aircraft createAircraft(Pair<DoubleProperty, DoubleProperty> coordinates, int id, IntegerProperty maximumAmountOfFuel,
+    public Aircraft createAircraft(Pair<Double, Double> coordinates, int id, IntegerProperty maximumAmountOfFuel,
                                    IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport,
                                    TravelRoute travelRoute, typesOfArms typeOfArms)
     {

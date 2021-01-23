@@ -16,6 +16,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Pair;
+import other.TravelRoute;
 import ports.Airport;
 import ports.CivilianAirport;
 import ports.MilitaryAirport;
@@ -30,31 +31,24 @@ import static java.lang.Integer.parseInt;
 
 public class ControlPanelView implements EventHandler {
 
-    @FXML
     private ComboBox<String> chooseVehicleComboBox = new ComboBox<>();
 
-    @FXML
     private ComboBox<String> airportComboBox = new ComboBox<>();
 
-    @FXML
     private ComboBox<String> typeOfArmsComboBox = new ComboBox<>();
 
-    @FXML
     private ComboBox<String> firmNamesComboBox = new ComboBox<>();
 
-    @FXML
+    private ComboBox<String> travelRouteComboBox = new ComboBox<>();
+
     private final Button submitButton = new Button("Submit");
 
-    @FXML
     private TextField maximumAmountOfPassengersTextField = new TextField();
 
-    @FXML
     private TextField amountOfStaffTextField = new TextField();
 
-    @FXML
     private TextField currentOfPassengersTextField = new TextField();
 
-    @FXML
     private TextField velocityTextField = new TextField();
 
 
@@ -125,6 +119,7 @@ public class ControlPanelView implements EventHandler {
         initializeEntityComboBox();
         initializeVehiclePanel();
         initializeFirmNamesComboBox();
+        initializeTravelRouteComboBox();
     }
 
     private void initializeFirmNamesComboBox() {
@@ -134,6 +129,15 @@ public class ControlPanelView implements EventHandler {
         }
         firmNamesComboBox.getSelectionModel().select("Select firm name");
         firmNamesComboBox.setPrefSize(prefWidth, prefHeight);
+    }
+
+    private void initializeTravelRouteComboBox() {
+        travelRouteComboBox.getItems().add("Select travel route");
+        for (TravelRoute travelRoute : controller.getListOfSeaRoutes()){
+            travelRouteComboBox.getItems().add(travelRoute.toString());
+        }
+        travelRouteComboBox.getSelectionModel().select("Select travel route");
+        travelRouteComboBox.setPrefSize(prefWidth, prefHeight);
     }
 
     private void initializeVehiclePanel() {
@@ -184,21 +188,21 @@ public class ControlPanelView implements EventHandler {
     }
 
     private <T> void createLabelsForAircraft(T object) {
-        Pair<DoubleProperty, DoubleProperty> coordinates = ((Aircraft) object).getCoordinates();
+        Pair<Double, Double> coordinates = ((Aircraft) object).getCoordinates();
         Label specificationLabel = createLabel(("Maximum amount of fuel: " + ((Aircraft) object).getMaximumAmountOfFuel()) + "\n" +
                 ("Current amount of fuel: " + ((Aircraft) object).getCurrentAmountOfFuel()) + "\n" +
                 ("Amount of staff: " + ((Aircraft) object).getAmountOfStaff()) + "\n" +
                 ("Last visited airport: " + ((Aircraft) object).getLastVisitedAirport()) + "\n" +
                 ("Next airport: " + ((Aircraft) object).getNextAirport()) + "\n" +
                 ("Travel route: " + ((Aircraft) object).getTravelRoute()) + "\n" +
-                ("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")", "bg-1");
+                ("Coordinates: " + "(" + coordinates.getKey() + ", " + coordinates.getValue()) + ")", "bg-1");
         specificationPanel.getChildren().add(specificationLabel);
     }
 
     private <T> void createLabelsForShip(T object) {
-        Pair<DoubleProperty, DoubleProperty> coordinates = ((Ship) object).getCoordinates();
+        Pair<Double, Double> coordinates = ((Ship) object).getCoordinates();
         Label specificationLabel = createLabel(("Firm name: " + ((PassengerShip) object).getFirmName()) + "\n" +
-                ("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")" + "\n" +
+                ("Coordinates: " + "(" + coordinates.getKey() + ", " + coordinates.getValue()) + ")" + "\n" +
                 ("Maximum amount of passengers: " + ((Ship) object).getMaximumAmountOfPassengers()) + "\n" +
                 ("Current amount of passengers: " + ((Ship) object).getCurrentAmountOfPassengers()), "bg-1");
         specificationPanel.getChildren().add(specificationLabel);
@@ -239,10 +243,6 @@ public class ControlPanelView implements EventHandler {
             Label label5 = createLabel(("Type of arms: " + ((MilitaryShip) object).getTypeOfArms()), "bg-1");
             specificationPanel.getChildren().add(label5);
         } else if (object instanceof CivilianAirport || object instanceof MilitaryAirport) {
-            Pair<DoubleProperty, DoubleProperty> coordinates = ((Airport) object).getCoordinates();
-//            Label airportLabel = createLabel(("Airport Name: " + ((Airport) object).getName()) + " Airport" + "\n" +
-//                    ("Coordinates: " + "(" + coordinates.getKey().get() + ", " + coordinates.getValue().get()) + ")" + "\n" +
-//                    ("Current serviced aircraft: " + ((Airport) object).getCurrentServicedAircraft()), "bg-1");
             Label airportLabel = createLabel(((Airport) object).getInfo(), "bg-1");
             specificationPanel.getChildren().add(airportLabel);
         }
@@ -295,9 +295,6 @@ public class ControlPanelView implements EventHandler {
     private void attachListenerToTreeView() {
         treeView.getSelectionModel().selectedItemProperty().addListener(((observable, oldValue, newValue) -> {
             try {
-//                newValue.getValue().getCoordinates().getKey().addListener(((observable1, oldValue1, newValue1) -> {
-//                    initializeSpecificationPanel(newValue.getValue());
-//                }));
                 initializeSpecificationPanel(newValue.getValue());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -354,7 +351,8 @@ public class ControlPanelView implements EventHandler {
         vehiclePanel.getChildren().add(1, firmNamesComboBox);
         vehiclePanel.getChildren().add(2, maximumAmountOfPassengersTextField);
         vehiclePanel.getChildren().add(3, currentOfPassengersTextField);
-        vehiclePanel.getChildren().add(4, submitButton);
+        vehiclePanel.getChildren().add(4,travelRouteComboBox);
+        vehiclePanel.getChildren().add(5, submitButton);
     }
 
     private void setVehiclePanelForMilitaryShip() {
@@ -380,7 +378,7 @@ public class ControlPanelView implements EventHandler {
         Airport selectedAirport = getAirport(getSelectedValue(airportComboBox));
         if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Aircraft")) {
             try {
-                Aircraft aircraft = selectedAirport.createAircraft((Pair<DoubleProperty, DoubleProperty>) selectedAirport.getCoordinates(),
+                Aircraft aircraft = selectedAirport.createAircraft(selectedAirport.getCoordinates(),
                         Integer.parseInt(maximumAmountOfPassengersTextField.getText()),
                         new SimpleIntegerProperty(Integer.parseInt(currentOfPassengersTextField.getText())),
                         controller.assignId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),
@@ -410,12 +408,10 @@ public class ControlPanelView implements EventHandler {
         try {
             PassengerShip passengerShip = controller.createPassengerShip(maximumAmountOfPassengersTextField.getText(),
                     currentOfPassengersTextField.getText(),
-                    firmNamesComboBox.getSelectionModel().getSelectedItem(), "10", "1");
+                    firmNamesComboBox.getSelectionModel().getSelectedItem(), "23", travelRouteComboBox.getSelectionModel().getSelectedItem().split(" ")[2]);
             controller.addShipToListOfShips(passengerShip);
             makeBranch(ships, new TreeItem<Node>(passengerShip));
             Main.mapPanelView.drawShip(passengerShip);
-            //TODO uruchom wątek
-            //controller.getListOfThreads().get(controller.getListOfThreads().size()-1).start();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -427,17 +423,16 @@ public class ControlPanelView implements EventHandler {
         if (event.getSource() == submitButton) {
             if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Aircraft") || getSelectedValue(chooseVehicleComboBox).equals("Military Aircraft")) {
                 createAircraftObject();
-            }
-            else {
+            } else {
                 createPassengerShipObject();
             }
             resetVehiclePanel();
             chooseVehicleComboBox.getSelectionModel().select("Select Vehicle");
-            System.out.println("Event: submitButton works!");
+            //System.out.println("Event: submitButton works!");
         }
 
         if (event.getSource() == chooseVehicleComboBox) {
-            System.out.println("Event: chooseVehicleComboBox works! Current value equals: " + chooseVehicleComboBox.getValue() + "\n");
+            //System.out.println("Event: chooseVehicleComboBox works! Current value equals: " + chooseVehicleComboBox.getValue() + "\n");
             if (chooseVehicleComboBox.getValue().equals("Passenger Aircraft")) {
                 initializeAirportComboBox(true);
                 setVehiclePanelForPassengerAircraft();

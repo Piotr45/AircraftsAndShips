@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Semaphore;
 
-public class SeaNode extends Node{
+public class SeaNode extends Node {
 
-    private Semaphore semaphore = new Semaphore(1000);
+    private Semaphore semaphore = new Semaphore(1);
     private List<SeaNode> connections = new ArrayList<>();
     private List<Ship> queue = new ArrayList<>();
 
-    public SeaNode(Pair<DoubleProperty, DoubleProperty> coordinates) throws InterruptedException {
+    public SeaNode(Pair<Double, Double> coordinates) throws InterruptedException {
         super(coordinates);
     }
 
@@ -25,20 +25,26 @@ public class SeaNode extends Node{
         return false;
     }
 
+    public Boolean isNodeFree2() {
+        if (this.semaphore.availablePermits() == 1) {
+            return true;
+        }
+        return false;
+    }
+
     public void freeNode() {
-        //System.out.println("\t\t" + this.getCoordinates());
         this.semaphore.release();
     }
 
-    public void occupy()  {
+    public void occupy() {
         try {
-            //System.out.println("\t\t" + this.getCoordinates());
-            this.semaphore.acquire(1);
-            Thread.sleep(1000);
+            //this.semaphore.acquire(1);
+            Thread.sleep(2000);
+            //System.out.println("Time is over");
+            freeNode();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
     }
 
     public Semaphore getSemaphore() {

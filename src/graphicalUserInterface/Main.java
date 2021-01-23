@@ -44,8 +44,9 @@ public class Main extends Application {
         setMapStage();
         scaleMapStage();
 
-        controlPanelView = new ControlPanelView(primaryStage, controller);
+
         mapPanelView.showWindow();
+        controlPanelView = new ControlPanelView(primaryStage, controller);
 
         AnimationTimer animationTimer = new AnimationTimer() {
             @Override
@@ -80,11 +81,11 @@ public class Main extends Application {
         });
     }
 
-    private void setCloseEvent(Stage primaryStage){
+    private void setCloseEvent(Stage primaryStage) {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent e) {
-                for (Ship ship : controller.getListOfShips()){
+                for (Ship ship : controller.getListOfShips()) {
                     ship.getThread().stop();
                 }
                 Platform.exit();
@@ -94,7 +95,7 @@ public class Main extends Application {
         mapStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent e) {
-                for (Ship ship : controller.getListOfShips()){
+                for (Ship ship : controller.getListOfShips()) {
                     ship.getThread().stop();
                 }
                 Platform.exit();
