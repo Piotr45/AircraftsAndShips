@@ -1,14 +1,21 @@
 package vehicles;
 
+import enumerates.States;
+import graphicalUserInterface.MapPanelView;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.Property;
 import javafx.beans.property.SimpleIntegerProperty;
+import javafx.scene.shape.Circle;
+import other.SeaNode;
 import other.TravelRoute;
 import ports.Airport;
 import javafx.util.Pair;
 import enumerates.typesOfArms;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public abstract class Aircraft extends Vehicle{
@@ -16,17 +23,21 @@ public abstract class Aircraft extends Vehicle{
     private IntegerProperty maximumAmountOfFuel = new SimpleIntegerProperty(this, "maximumAmountOfFuel");
     private IntegerProperty currentAmountOfFuel = new SimpleIntegerProperty(this, "currentAmountOfFuel");
     private int amountOfStaff;
-    //TODO aktualizuj lotniska
     private Airport lastVisitedAirport;
+    private Airport currentAirport;
     private Airport nextAirport;
 
     public Aircraft(Pair<Double, Double> coordinates, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
-        super(coordinates, id, 10, travelRoute);
+        super(coordinates, id, 200, travelRoute);
+        this.setCoordinates(coordinates);
+
         this.maximumAmountOfFuel = maximumAmountOfFuel;
         this.currentAmountOfFuel = currentAmountOfFuel;
         this.amountOfStaff = amountOfStaff;
         this.lastVisitedAirport = lastVisitedAirport;
         this.nextAirport = nextAirport;
+        this.currentAirport = (Airport) getNode(getCoordinates(), travelRoute);
+        newDestinationBasedOnCurrent();
     }
 
     public Aircraft() {
@@ -80,34 +91,62 @@ public abstract class Aircraft extends Vehicle{
         this.nextAirport = nextAirport;
     }
 
-    public void land() {
-
-    }
-
-    private boolean checkIfInRange(int bound, int x) {
-        if (bound < 0) {
-            return x > bound && x < (bound * (-1));
+    @Override
+    public void newDestinationBasedOnCurrent() {
+        if (currentAirport.equals(this.getTravelRoute().getCheckpoints().get(
+                this.getTravelRoute().getCheckpoints().size() - 1))){
+            Collections.reverse(this.getTravelRoute().getCheckpoints());
+            nextAirport = (Airport) this.getTravelRoute().getCheckpoints().get(1);
         }
-        return x < bound && x > (bound * (-1));
+        else {
+            nextAirport = (Airport) this.getTravelRoute().getCheckpoints().get(this.getTravelRoute().getCheckpoints().indexOf(currentAirport) + 1);
+        }
     }
 
-    public void fly() {
-
+    @Override
+    public void updateNodes() {
+        lastVisitedAirport = (Airport) getNode(currentAirport.getCoordinates(), this.getTravelRoute());
+        currentAirport = (Airport) getNode(nextAirport.getCoordinates(), this.getTravelRoute());
+        newDestinationBasedOnCurrent();
     }
 
-    public void tankUp() {
+    @Override
+    public synchronized void move(double deltaT) throws InterruptedException {
+        switch (this.getState()) {
+            case traveling:
+                if (moveTo(this, deltaT, nextAirport)) {
+                    this.setState(States.waiting);
+                }
+                break;
+            case waiting:
+                if (nextAirport.isNodeFree()) {
+                    updateNodes();
+                    setState(States.arriving);
+                } else {
+                    Thread.sleep(250);
+                    System.out.println("Failed");
+                }
+                break;
+            case arriving:
+                this.setCoordinates(currentAirport.getCoordinates());
+                currentAirport.occupy(this);
+                if (true) {
+                    currentAirport.freeNode();
+                    setState(States.traveling);
+                }
+                break;
+        }
     }
 
-    public void changePassengers() {
+    @Override
+    public void run() {
+        super.run();
     }
 
     public void reportGlitch() {
     }
 
     public void emergencyLanding() {
-    }
-
-    public void stayInQueue() {
     }
 
     @Override

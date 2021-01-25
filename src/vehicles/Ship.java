@@ -1,6 +1,7 @@
 package vehicles;
 
 import enumerates.States;
+import graphicalUserInterface.Main;
 import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -17,7 +18,6 @@ public abstract class Ship extends Vehicle {
     private SeaNode previousNode;
     private SeaNode currentNode;
     private SeaNode destinationNode;
-
 
     public Ship(int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers,
                 int velocity, TravelRoute travelRoute) {
@@ -52,12 +52,10 @@ public abstract class Ship extends Vehicle {
         this.currentAmountOfPassengers.set(currentAmountOfPassengers);
     }
 
-    public void shuttle() {
-    }
-
-    private void newDestinationBasedOnCurrent() {
+    @Override
+    public void newDestinationBasedOnCurrent() {
         int index = this.getTravelRoute().getCheckpoints().indexOf(this.currentNode) + 1;
-        if (index == this.getTravelRoute().getCheckpoints().size() - 1) {
+        if (index == this.getTravelRoute().getCheckpoints().size()) {
             this.destinationNode = (SeaNode) this.getTravelRoute().getCheckpoints().get(0);
         } else {
             this.destinationNode = (SeaNode) this.getTravelRoute().getCheckpoints().get(index);
@@ -66,19 +64,13 @@ public abstract class Ship extends Vehicle {
 
     @Override
     public void updateNodes() {
-        //System.out.println(this.getCoordinates() + "\t" + destinationNode.getCoordinates());
-        //if (this.areCoordinatesTheSame(this.getCoordinates(), destinationNode.getCoordinates())) {
         previousNode = (SeaNode) getNode(currentNode.getCoordinates(), this.getTravelRoute());
         currentNode = (SeaNode) getNode(destinationNode.getCoordinates(), this.getTravelRoute());
         newDestinationBasedOnCurrent();
-        //System.out.println("Prev: " + previousNode.getCoordinates() +" Curr: " + currentNode.getCoordinates() + " Dest: " + destinationNode.getCoordinates());
-        //System.exit(1);
-        //}
     }
 
     @Override
-    public void move(double deltaT) throws InterruptedException {
-        //System.out.println(this.getId() + " " + this.getState() + " " + destinationNode.getCoordinates());
+    public synchronized void move(double deltaT) throws InterruptedException {
         switch (this.getState()) {
             case traveling:
                 if (moveTo(this, deltaT, destinationNode)) {
@@ -90,7 +82,7 @@ public abstract class Ship extends Vehicle {
                     updateNodes();
                     setState(States.arriving);
                 } else {
-                    Thread.sleep(250);
+                    //Thread.sleep(250);
                     System.out.println("Failed");
                 }
                 break;
@@ -102,17 +94,12 @@ public abstract class Ship extends Vehicle {
                 setState(States.traveling);
                 break;
         }
+        //this.wait();
     }
 
     @Override
     public void run() {
-        while (true) {
-            try {
-                move(0.00000025);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+            super.run();
     }
 
     @Override

@@ -39,7 +39,7 @@ public class MapPanelView {
     public static StackPane pane = new StackPane();
 
     private final Stage mapWindow;
-    private Group root = new Group();
+    public static Group root = new Group();
     private Scene scene;
     private Image image;
     private ImageView imageView;
@@ -55,7 +55,7 @@ public class MapPanelView {
         setImageView();
         pane.getChildren().add(root);
         scene = new Scene(pane, initWidth, initHeight);
-        //scaleImageView();
+        scaleImageView();
         mapWindow.setScene(scene);
         buildUI();
     }
@@ -129,8 +129,6 @@ public class MapPanelView {
         Circle circle = new Circle();
         circle.setCenterX(coordinates.getKey());
         circle.setCenterY(coordinates.getValue());
-//        circle.centerXProperty().bind(coordinates.getKey());
-//        circle.centerYProperty().bind(coordinates.getValue());
 
         circle.setRadius(5);
         circle.setFill(Paint.valueOf(chooseColor(airport)));
@@ -161,9 +159,12 @@ public class MapPanelView {
 
     private void drawAircraft(Aircraft aircraft) {
         Pair<Double, Double> coordinates = aircraft.getCoordinates();
-        Polygon triangle = new Polygon();
-        triangle.getPoints().addAll(0.0, 0.0, 20.0, 10.0, 10.0, 20.0);
-        root.getChildren().add(triangle);
+        Circle circle = new Circle();
+        circle.setCenterX(coordinates.getKey());
+        circle.setCenterY(coordinates.getValue());
+        circle.setRadius(3);
+        circle.setFill(Paint.valueOf(chooseColor(( ((PassengerAircraft) aircraft) ))));
+        root.getChildren().add(circle);
     }
 
     private void drawAircrafts() {
@@ -226,18 +227,12 @@ public class MapPanelView {
             line.setStartX(routeCheckpoints.get(index).getCoordinates().getKey());
             line.setStartY(routeCheckpoints.get(index).getCoordinates().getValue());
 
-//            line.startXProperty().bind(routeCheckpoints.get(index).getCoordinates().getKey());
-//            line.startYProperty().bind(routeCheckpoints.get(index).getCoordinates().getValue());
             if (index == routeCheckpoints.size() - 1) {
                 line.setEndX(routeCheckpoints.get(0).getCoordinates().getKey());
                 line.setEndY(routeCheckpoints.get(0).getCoordinates().getValue());
-//                line.endXProperty().bind(routeCheckpoints.get(0).getCoordinates().getKey());
-//                line.endYProperty().bind(routeCheckpoints.get(0).getCoordinates().getValue());
             } else {
                 line.setEndX(routeCheckpoints.get(index + 1).getCoordinates().getKey());
                 line.setEndY(routeCheckpoints.get(index + 1).getCoordinates().getValue());
-//                line.endXProperty().bind(routeCheckpoints.get(index + 1).getCoordinates().getKey());
-//                line.endYProperty().bind(routeCheckpoints.get(index + 1).getCoordinates().getValue());
             }
 
             Circle circle = new Circle();

@@ -1,20 +1,17 @@
 package graphicalUserInterface;
 
-import com.sun.javafx.tk.Toolkit;
-import com.sun.scenario.animation.AbstractMasterTimer;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
+import javafx.concurrent.Service;
 import javafx.concurrent.Task;
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import other.TravelRoute;
+import vehicles.Aircraft;
 import vehicles.Ship;
 
-import java.lang.annotation.Target;
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.concurrent.CountDownLatch;
 
 public class Main extends Application {
 
@@ -35,30 +32,35 @@ public class Main extends Application {
         }
     }
 
-    public static MapPanelView mapPanelView = new MapPanelView(mapStage, controller);
+    public static MapPanelView mapPanelView;
     public static ControlPanelView controlPanelView;
+    public static ThreadGroup threadGroup = new ThreadGroup("Squad");
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        controlPanelView = new ControlPanelView(primaryStage, controller);
+
+        mapPanelView = new MapPanelView(mapStage, controller);
         mapStage.setResizable(false);
         setMapStage();
         scaleMapStage();
-
-
         mapPanelView.showWindow();
-        controlPanelView = new ControlPanelView(primaryStage, controller);
-
-        AnimationTimer animationTimer = new AnimationTimer() {
-            @Override
-            public void handle(long now) {
-                mapPanelView.resetUI();
-            }
-        };
-        animationTimer.start();
 
         setCloseEvent(primaryStage);
-    }
 
+        new AnimationTimer() {
+            @Override
+            public void handle(long l) {
+                try {
+                    Thread.sleep(33);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                Platform.runLater(() -> mapPanelView.resetUI());
+            }
+        }.start();
+
+    }
 
     private void setMapStage() {
         mapStage.setWidth(mapMaxWidth * 0.9);
@@ -85,9 +87,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent e) {
-                for (Ship ship : controller.getListOfShips()) {
-                    ship.getThread().stop();
-                }
+                threadGroup.destroy();
                 Platform.exit();
                 System.exit(0);
             }
@@ -95,9 +95,7 @@ public class Main extends Application {
         mapStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent e) {
-                for (Ship ship : controller.getListOfShips()) {
-                    ship.getThread().stop();
-                }
+                threadGroup.destroy();
                 Platform.exit();
                 System.exit(0);
             }

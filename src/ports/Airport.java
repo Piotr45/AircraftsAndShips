@@ -8,10 +8,16 @@ import other.Node;
 import other.TravelRoute;
 import vehicles.Aircraft;
 import javafx.util.Pair;
+import vehicles.PassengerAircraft;
+
+import java.util.Random;
+import java.util.concurrent.Semaphore;
 
 public class Airport extends Node implements planeFactory {
 
     private Aircraft currentServicedAircraft = null;
+    private Semaphore semaphore = new Semaphore(5);
+    private Random random = new Random();
 
     public Airport(String name, Pair<Double, Double> coordinates) {
         super(coordinates, name);
@@ -24,6 +30,26 @@ public class Airport extends Node implements planeFactory {
     public Airport() {
     }
 
+    public void occupy(Aircraft aircraft) {
+        try {
+            Thread.sleep(3000);
+            serviceAircraft(aircraft);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public Boolean isNodeFree() {
+        if (this.semaphore.tryAcquire()) {
+            return true;
+        }
+        return false;
+    }
+
+    public void freeNode() {
+        semaphore.release();
+    }
+
     public Aircraft getCurrentServicedAircraft() {
         return currentServicedAircraft;
     }
@@ -33,7 +59,14 @@ public class Airport extends Node implements planeFactory {
     }
 
 
-    public void serviceAircraft(){}
+    public void serviceAircraft(Aircraft aircraft){
+        try {
+            ((PassengerAircraft) aircraft).setCurrentAmountOfPassengers(random.nextInt(
+                    ((PassengerAircraft) aircraft).getMaximumAmountOfPassengers() - aircraft.getAmountOfStaff() ));
+        } catch (Exception ignore) {
+        }
+        aircraft.setCurrentAmountOfFuel(100);
+    }
 
     @Override
     public String getInfo() {

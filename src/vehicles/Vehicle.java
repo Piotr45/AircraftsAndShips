@@ -1,7 +1,11 @@
 package vehicles;
 
 import enumerates.States;
+import graphicalUserInterface.Main;
+import graphicalUserInterface.MapPanelView;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
+import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 import other.MyVector;
 import other.Node;
@@ -41,12 +45,16 @@ public abstract class Vehicle extends Node implements Runnable {
     public Vehicle() {
     }
 
+    public void setTravelRoute(TravelRoute travelRoute) {
+        this.travelRoute = travelRoute;
+    }
+
     public Thread getThread() {
         return thread;
     }
 
     public void setThread() {
-        this.thread = new Thread(this);
+        this.thread = new Thread(Main.threadGroup, this);
     }
 
     public int getId() {
@@ -90,6 +98,10 @@ public abstract class Vehicle extends Node implements Runnable {
     public void updateNodes() {
     }
 
+    public void newDestinationBasedOnCurrent() {
+
+    }
+
     public Boolean moveTo(Vehicle vehicle, double deltaT, Node nextCheckpoint) {
         MyVector vector = new MyVector(vehicle.getCoordinates(), nextCheckpoint.getCoordinates());
         MyVector normalizedVector = new MyVector(vector);
@@ -106,7 +118,7 @@ public abstract class Vehicle extends Node implements Runnable {
         }
     }
 
-    public void move(double deltaT) throws InterruptedException {
+    public synchronized void move(double deltaT) throws InterruptedException {
         switch (this.state) {
             case traveling: {
                 if (moveTo(this, deltaT, getNode(getCoordinates(), getTravelRoute()))) {
@@ -126,10 +138,12 @@ public abstract class Vehicle extends Node implements Runnable {
 
     @Override
     public void run() {
-        try {
-            move(0.000001);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        while (true){
+            try {
+                move(0.0000001);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 

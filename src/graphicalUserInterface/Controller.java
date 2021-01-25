@@ -3,6 +3,7 @@ package graphicalUserInterface;
 
 import com.sun.media.jfxmediaimpl.platform.Platform;
 import enumerates.FirmNames;
+import enumerates.States;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -15,10 +16,7 @@ import other.TravelRoute;
 import ports.Airport;
 import ports.CivilianAirport;
 import ports.MilitaryAirport;
-import vehicles.Aircraft;
-import vehicles.PassengerShip;
-import vehicles.Ship;
-import vehicles.Vehicle;
+import vehicles.*;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -82,10 +80,7 @@ public class Controller{
                 new SimpleIntegerProperty(Integer.parseInt(currentAmountOfPassengers)),
                 FirmNames.valueOf(firmName), Integer.parseInt(velocity), getListOfTravelRoutes().get(Integer.parseInt(travelRoute)));
         addShipToListOfShips(passengerShip);
-
-
         passengerShip.setThread();
-        passengerShip.getThread().setDaemon(true);
         passengerShip.getThread().start();
         return passengerShip;
     }
@@ -239,11 +234,29 @@ public class Controller{
         }
     }
 
+    private void createPassengerAircraft(List<String> attributes) {
+        CivilianAirport airport = (CivilianAirport) returnAirportNode(attributes.get(1));
+        try {
+            PassengerAircraft aircraft = (PassengerAircraft) airport.createAircraft(airport.getCoordinates(), Integer.parseInt(attributes.get(2)),
+                    new SimpleIntegerProperty(Integer.parseInt(attributes.get(3))), assignId(),
+                    new SimpleIntegerProperty(100), new SimpleIntegerProperty(100), Integer.parseInt(attributes.get(4)),
+                    null, null, listOfTravelRoutes.get(Integer.parseInt(attributes.get(5))));
+            listOfAircrafts.add(aircraft);
+            aircraft.setThread();
+            aircraft.getThread().start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public void initializeEntities() throws InterruptedException {
         List<List<String>> records = readCSVFile("resources/entities.csv");
         for (List<String> list : records) {
             if (list.get(0).equals("PS")) {
                 createPassengerShip(list.get(1), list.get(2), list.get(3), list.get(4), list.get(5));
+            }
+            if (list.get(0).equals("PA")) {
+                createPassengerAircraft(list);
             }
         }
     }

@@ -12,12 +12,21 @@ public class TravelRoute {
     private List<Node> checkpoints = new ArrayList<>();
     private Random random = new Random();
     private int id;
+    private Vehicle occupyingVehicle;
 
     public TravelRoute() {
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public void setOccupyingVehicle(Vehicle occupyingVehicle) {
+        this.occupyingVehicle = occupyingVehicle;
+    }
+
+    public Vehicle getOccupyingVehicle() {
+        return occupyingVehicle;
     }
 
     public List<Node> getCheckpoints() {

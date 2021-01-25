@@ -39,10 +39,10 @@ public class SeaNode extends Node {
     public void occupy() {
         try {
             //this.semaphore.acquire(1);
-            Thread.sleep(2000);
+            //Thread.sleep(2000);
             //System.out.println("Time is over");
             freeNode();
-        } catch (InterruptedException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
