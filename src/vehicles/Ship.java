@@ -32,6 +32,10 @@ public abstract class Ship extends Vehicle {
     public Ship() {
     }
 
+    public SeaNode getCurrentNode() {
+        return currentNode;
+    }
+
     public int getMaximumAmountOfPassengers() {
         return maximumAmountOfPassengers;
     }

@@ -12,10 +12,9 @@ public class MilitaryAircraft extends Aircraft{
 
     private typesOfArms typeOfArms;
 
-    public MilitaryAircraft(Pair<Double, Double> coordinates, int id, IntegerProperty maximumAmountOfFuel,
-                            IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport,
+    public MilitaryAircraft(Pair<Double, Double> coordinates, int id, int amountOfStaff, Airport lastVisitedAirport,
                             Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
-        super(coordinates, id, maximumAmountOfFuel, currentAmountOfFuel, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
+        super(coordinates, id, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
         this.typeOfArms = typeOfArms;
     }
 

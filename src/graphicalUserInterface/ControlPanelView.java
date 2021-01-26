@@ -2,6 +2,7 @@ package graphicalUserInterface;
 
 import com.sun.media.jfxmediaimpl.platform.Platform;
 import enumerates.FirmNames;
+import enumerates.States;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
@@ -13,6 +14,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Pair;
@@ -25,6 +27,7 @@ import enumerates.typesOfArms;
 import other.Node;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static java.lang.Integer.parseInt;
 
@@ -42,6 +45,9 @@ public class ControlPanelView implements EventHandler {
     private ComboBox<String> travelRouteComboBox = new ComboBox<>();
 
     private final Button submitButton = new Button("Submit");
+    private final Button addVehicleButton = new Button("Add vehicle");
+    private final Button removeVehicleButton = new Button("Remove vehicle");
+    private final Button emergencyButton = new Button("Call breakdown");
 
     private TextField maximumAmountOfPassengersTextField = new TextField();
 
@@ -57,6 +63,7 @@ public class ControlPanelView implements EventHandler {
     private BorderPane borderPane;
     private VBox vehiclePanel;
     private VBox specificationPanel = new VBox();
+    private HBox options = new HBox();
 
     public Controller controller;
 
@@ -84,10 +91,18 @@ public class ControlPanelView implements EventHandler {
 
         initializeStage();
         initializeTreeView();
+        initializeOptions();
 
-        chooseVehicleComboBox.setOnAction(this);
+        setButtonsOnAction();
 
         controlPanelWindow.show();
+    }
+
+    private void setButtonsOnAction() {
+        chooseVehicleComboBox.setOnAction(this);
+        addVehicleButton.setOnAction(this);
+        removeVehicleButton.setOnAction(this);
+        emergencyButton.setOnAction(this);
     }
 
     private void setPromptTexts() {
@@ -100,6 +115,14 @@ public class ControlPanelView implements EventHandler {
         maximumAmountOfPassengersTextField.setPromptText("Maximum amount of passengers");
         currentOfPassengersTextField.setPromptText("Current amount of passengers");
         velocityTextField.setPromptText("Velocity");
+    }
+
+    private void initializeOptions() {
+        this.options.getChildren().addAll(this.addVehicleButton, this.removeVehicleButton, this.emergencyButton);
+
+        options.setAlignment(Pos.BASELINE_LEFT);
+        BorderPane.setAlignment(options, Pos.BASELINE_LEFT);
+        borderPane.setTop(options);
     }
 
     private void initializeTreeView() {
@@ -117,7 +140,6 @@ public class ControlPanelView implements EventHandler {
     private void initializeComboBoxes() {
         initializeTypeOfArmsComboBox();
         initializeEntityComboBox();
-        initializeVehiclePanel();
         initializeFirmNamesComboBox();
         initializeTravelRouteComboBox();
     }
@@ -133,7 +155,7 @@ public class ControlPanelView implements EventHandler {
 
     private void initializeTravelRouteComboBox() {
         travelRouteComboBox.getItems().add("Select travel route");
-        for (TravelRoute travelRoute : controller.getListOfSeaRoutes()){
+        for (TravelRoute travelRoute : controller.getListOfSeaRoutes()) {
             travelRouteComboBox.getItems().add(travelRoute.toString());
         }
         travelRouteComboBox.getSelectionModel().select("Select travel route");
@@ -194,15 +216,14 @@ public class ControlPanelView implements EventHandler {
                 ("Amount of staff: " + ((Aircraft) object).getAmountOfStaff()) + "\n" +
                 ("Last visited airport: " + ((Aircraft) object).getLastVisitedAirport()) + "\n" +
                 ("Next airport: " + ((Aircraft) object).getNextAirport()) + "\n" +
-                ("Travel route: " + ((Aircraft) object).getTravelRoute()) + "\n" +
-                ("Coordinates: " + "(" + coordinates.getKey() + ", " + coordinates.getValue()) + ")", "bg-1");
+                ("Coordinates: " + "(" + ((int) coordinates.getKey().doubleValue()) + ", " + ((int) coordinates.getValue().doubleValue())) + ")", "bg-1");
         specificationPanel.getChildren().add(specificationLabel);
     }
 
     private <T> void createLabelsForShip(T object) {
         Pair<Double, Double> coordinates = ((Ship) object).getCoordinates();
         Label specificationLabel = createLabel(("Firm name: " + ((PassengerShip) object).getFirmName()) + "\n" +
-                ("Coordinates: " + "(" + coordinates.getKey() + ", " + coordinates.getValue()) + ")" + "\n" +
+                ("Coordinates: " + "(" + ((int) coordinates.getKey().doubleValue()) + ", " + ((int) coordinates.getValue().doubleValue())) + ")" + "\n" +
                 ("Maximum amount of passengers: " + ((Ship) object).getMaximumAmountOfPassengers()) + "\n" +
                 ("Current amount of passengers: " + ((Ship) object).getCurrentAmountOfPassengers()), "bg-1");
         specificationPanel.getChildren().add(specificationLabel);
@@ -252,17 +273,17 @@ public class ControlPanelView implements EventHandler {
     }
 
     private void addAirportsToComboBox(boolean isCivil) {
-        List<Airport> listOfAirports = controller.getListOfAirports();
+        List<Airport> listOfAirports = Controller.getListOfAirports();
         if (listOfAirports.isEmpty()) {
             return;
         }
         if (isCivil) {
-            for (Airport airport : controller.getListOfAirports()) {
+            for (Airport airport : Controller.getListOfAirports()) {
                 if (airport instanceof CivilianAirport)
                     airportComboBox.getItems().add(airport.getName());
             }
         } else {
-            for (Airport airport : controller.getListOfAirports()) {
+            for (Airport airport : Controller.getListOfAirports()) {
                 if (airport instanceof MilitaryAirport)
                     airportComboBox.getItems().add(airport.getName());
             }
@@ -285,11 +306,11 @@ public class ControlPanelView implements EventHandler {
 
     private void createMainBranches() {
         aircrafts = makeBranch(treeRoot, aircrafts);
-        addBranchesToRoot(controller.getListOfAircrafts(), aircrafts);
+        addBranchesToRoot(Controller.getListOfAircrafts(), aircrafts);
         ships = makeBranch(treeRoot, ships);
         addBranchesToRoot(controller.getListOfShips(), ships);
         airports = makeBranch(treeRoot, airports);
-        addBranchesToRoot(controller.getListOfAirports(), airports);
+        addBranchesToRoot(Controller.getListOfAirports(), airports);
     }
 
     private void attachListenerToTreeView() {
@@ -351,7 +372,7 @@ public class ControlPanelView implements EventHandler {
         vehiclePanel.getChildren().add(1, firmNamesComboBox);
         vehiclePanel.getChildren().add(2, maximumAmountOfPassengersTextField);
         vehiclePanel.getChildren().add(3, currentOfPassengersTextField);
-        vehiclePanel.getChildren().add(4,travelRouteComboBox);
+        vehiclePanel.getChildren().add(4, travelRouteComboBox);
         vehiclePanel.getChildren().add(5, submitButton);
     }
 
@@ -366,7 +387,7 @@ public class ControlPanelView implements EventHandler {
     }
 
     private Airport getAirport(String string) {
-        for (Airport item : controller.getListOfAirports()) {
+        for (Airport item : Controller.getListOfAirports()) {
             if (item.getName().equals(string)) {
                 return item;
             }
@@ -380,9 +401,9 @@ public class ControlPanelView implements EventHandler {
             try {
                 Aircraft aircraft = selectedAirport.createAircraft(selectedAirport.getCoordinates(),
                         Integer.parseInt(maximumAmountOfPassengersTextField.getText()),
-                        new SimpleIntegerProperty(Integer.parseInt(currentOfPassengersTextField.getText())),
-                        controller.assignId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),
-                        Integer.parseInt(amountOfStaffTextField.getText()), selectedAirport, null, null);
+                        (Integer.parseInt(currentOfPassengersTextField.getText())),
+                        controller.assignId(), Integer.parseInt(amountOfStaffTextField.getText()), selectedAirport,
+                        null, null);
                 controller.addAircraftToListOfAircrafts(aircraft);
                 makeBranch(aircrafts, new TreeItem<Node>(aircraft));
             } catch (Exception e) {
@@ -393,9 +414,8 @@ public class ControlPanelView implements EventHandler {
             // TODO naprawić błąd tworzenia pojazdu
             try {
                 Aircraft aircraft = selectedAirport.createAircraft(selectedAirport.getCoordinates(),
-                        controller.assignId(), new SimpleIntegerProperty(100), new SimpleIntegerProperty(100),
-                        Integer.parseInt(amountOfStaffTextField.getText()), selectedAirport, null, null,
-                        typesOfArms.valueOf(typeOfArmsComboBox.getValue()));
+                        controller.assignId(), Integer.parseInt(amountOfStaffTextField.getText()), selectedAirport,
+                        null, null, typesOfArms.valueOf(typeOfArmsComboBox.getValue()));
                 controller.addAircraftToListOfAircrafts(aircraft);
                 makeBranch(aircrafts, new TreeItem<Node>(aircraft));
             } catch (Exception e) {
@@ -429,6 +449,39 @@ public class ControlPanelView implements EventHandler {
             resetVehiclePanel();
             chooseVehicleComboBox.getSelectionModel().select("Select Vehicle");
             //System.out.println("Event: submitButton works!");
+        }
+
+        if (event.getSource() == addVehicleButton) {
+            initializeVehiclePanel();
+        }
+
+        if (event.getSource() == emergencyButton) {
+            try {
+                Aircraft aircraft = ((Aircraft) treeView.getSelectionModel().getSelectedItem().getValue());
+                aircraft.emergencyLanding();
+                treeView.getSelectionModel().getSelectedItem().getParent().getChildren().remove(treeView.getSelectionModel().getSelectedItem());
+            } catch (Exception ignore) {
+            }
+        }
+
+        if (event.getSource() == removeVehicleButton) {
+            try {
+                Aircraft aircraft = ((Aircraft) treeView.getSelectionModel().getSelectedItem().getValue());
+                aircraft.getThread().stop();
+                if (aircraft.getState().equals(States.arriving)) {
+                    aircraft.getCurrentAirport().freeNode();
+                }
+                Controller.getListOfAircrafts().remove(aircraft);
+            } catch (Exception ignore) { }
+            try {
+                Ship ship = ((Ship) treeView.getSelectionModel().getSelectedItem().getValue());
+                ship.getThread().stop();
+                if (ship.getState().equals(States.arriving)) {
+                    ship.getCurrentNode().freeNode();
+                }
+                Controller.getListOfShips().remove(ship);
+            } catch (Exception ignore) { }
+            treeView.getSelectionModel().getSelectedItem().getParent().getChildren().remove(treeView.getSelectionModel().getSelectedItem());
         }
 
         if (event.getSource() == chooseVehicleComboBox) {

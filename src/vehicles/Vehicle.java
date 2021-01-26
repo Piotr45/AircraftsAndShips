@@ -2,15 +2,12 @@ package vehicles;
 
 import enumerates.States;
 import graphicalUserInterface.Main;
-import graphicalUserInterface.MapPanelView;
-import javafx.application.Platform;
-import javafx.concurrent.Task;
-import javafx.scene.shape.Circle;
 import javafx.util.Pair;
 import other.MyVector;
 import other.Node;
-import other.SeaNode;
 import other.TravelRoute;
+
+import java.util.Random;
 
 public abstract class Vehicle extends Node implements Runnable {
 
@@ -26,7 +23,7 @@ public abstract class Vehicle extends Node implements Runnable {
     public Vehicle(Pair<Double, Double> coordinates, int id, int velocity, TravelRoute travelRoute) {
         super(coordinates);
         this.id = id;
-        this.state = States.traveling;
+        this.state = States.arriving;
         this.velocity = velocity;
         this.travelRoute = travelRoute;
     }
@@ -138,6 +135,11 @@ public abstract class Vehicle extends Node implements Runnable {
 
     @Override
     public void run() {
+        try {
+            Thread.sleep(new Random().nextInt(100) * 10);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         while (true){
             try {
                 move(0.0000001);

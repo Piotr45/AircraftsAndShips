@@ -65,7 +65,7 @@ public class Airport extends Node implements planeFactory {
                     ((PassengerAircraft) aircraft).getMaximumAmountOfPassengers() - aircraft.getAmountOfStaff() ));
         } catch (Exception ignore) {
         }
-        aircraft.setCurrentAmountOfFuel(100);
+        aircraft.setCurrentAmountOfFuel(aircraft.getMaximumAmountOfFuel());
     }
 
     @Override
@@ -80,15 +80,13 @@ public class Airport extends Node implements planeFactory {
     }
 
     public Aircraft createAircraft(Pair<Double, Double> coordinates, int maximumAmountOfPassengers,
-                                   IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel,
-                                   IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport,
+                                   int currentAmountOfPassengers, int id, int amountOfStaff, Airport lastVisitedAirport,
                                    Airport nextAirport, TravelRoute travelRoute) {
         return null;
     }
 
     @Override
-    public Aircraft createAircraft(Pair<Double, Double> coordinates, int id, IntegerProperty maximumAmountOfFuel,
-                                   IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport,
+    public Aircraft createAircraft(Pair<Double, Double> coordinates, int id, int amountOfStaff, Airport lastVisitedAirport,
                                    Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
         return null;
     }

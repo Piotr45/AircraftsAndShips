@@ -30,8 +30,8 @@ import java.util.ResourceBundle;
 public class Controller{
 
     private static List<Airport> listOfAirports = new ArrayList<Airport>();
-    private List<Aircraft> listOfAircrafts = new ArrayList<Aircraft>();
-    private List<Ship> listOfShips = new ArrayList<Ship>();
+    public static List<Aircraft> listOfAircrafts = new ArrayList<Aircraft>();
+    public static List<Ship> listOfShips = new ArrayList<Ship>();
     private List<Integer> listOfIds = new ArrayList<>();
     private List<TravelRoute> listOfTravelRoutes = new ArrayList<>();
     private List<TravelRoute> listOfSeaRoutes = new ArrayList<>();
@@ -41,7 +41,6 @@ public class Controller{
         initializeAirports();
         initializeRoutes();
         initializeEntities();
-        //temp();
     }
 
     public List<TravelRoute> getListOfSeaRoutes() {
@@ -56,11 +55,11 @@ public class Controller{
         return listOfAirports;
     }
 
-    public List<Aircraft> getListOfAircrafts() {
+    public static List<Aircraft> getListOfAircrafts() {
         return listOfAircrafts;
     }
 
-    public List<Ship> getListOfShips() {
+    public static List<Ship> getListOfShips() {
         return listOfShips;
     }
 
@@ -158,14 +157,17 @@ public class Controller{
     }
 
     private int isThisNodeInMainTravelRouteReturnIndexOfThatNode(Pair<Double, Double> pair) throws NullPointerException, InterruptedException {
-        List<Node> listOfNodes = this.getListOfTravelRoutes().get(1).getCheckpoints();
-        SeaNode test = new SeaNode(pair);
-        for (Node node : listOfNodes) {
-            if (node.getCoordinates().getKey().equals(test.getCoordinates().getKey()) &&
-                    node.getCoordinates().getValue().equals(test.getCoordinates().getValue())) {
-                return listOfNodes.indexOf(node);
+        try {
+            List<Node> listOfNodes = this.getListOfTravelRoutes().get(1).getCheckpoints();
+
+            SeaNode test = new SeaNode(pair);
+            for (Node node : listOfNodes) {
+                if (node.getCoordinates().getKey().equals(test.getCoordinates().getKey()) &&
+                        node.getCoordinates().getValue().equals(test.getCoordinates().getValue())) {
+                    return listOfNodes.indexOf(node);
+                }
             }
-        }
+        } catch (Exception ignore) {}
         return -1;
     }
 
@@ -238,8 +240,7 @@ public class Controller{
         CivilianAirport airport = (CivilianAirport) returnAirportNode(attributes.get(1));
         try {
             PassengerAircraft aircraft = (PassengerAircraft) airport.createAircraft(airport.getCoordinates(), Integer.parseInt(attributes.get(2)),
-                    new SimpleIntegerProperty(Integer.parseInt(attributes.get(3))), assignId(),
-                    new SimpleIntegerProperty(100), new SimpleIntegerProperty(100), Integer.parseInt(attributes.get(4)),
+                    Integer.parseInt(attributes.get(3)), assignId(), Integer.parseInt(attributes.get(4)),
                     null, null, listOfTravelRoutes.get(Integer.parseInt(attributes.get(5))));
             listOfAircrafts.add(aircraft);
             aircraft.setThread();

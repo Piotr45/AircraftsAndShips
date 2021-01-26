@@ -168,7 +168,7 @@ public class MapPanelView {
     }
 
     private void drawAircrafts() {
-        for (Aircraft aircraft : controller.getListOfAircrafts()) {
+        for (Aircraft aircraft : Controller.getListOfAircrafts()) {
             drawAircraft(aircraft);
         }
     }

@@ -11,12 +11,11 @@ import java.util.List;
 public class PassengerAircraft extends Aircraft {
 
     private int maximumAmountOfPassengers;
-    private IntegerProperty currentAmountOfPassengers = new SimpleIntegerProperty(this, "currentAmountOfPassengers");
+    private int currentAmountOfPassengers;
 
     public PassengerAircraft(Pair<Double, Double> coordinates, int maximumAmountOfPassengers,
-                             IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel,
-                             IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
-        super(coordinates, id, maximumAmountOfFuel, currentAmountOfFuel, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
+                             int currentAmountOfPassengers, int id, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
+        super(coordinates, id, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
         this.maximumAmountOfPassengers = maximumAmountOfPassengers;
         this.currentAmountOfPassengers = currentAmountOfPassengers;
     }
@@ -33,15 +32,11 @@ public class PassengerAircraft extends Aircraft {
     }
 
     public int getCurrentAmountOfPassengers() {
-        return currentAmountOfPassengers.get();
-    }
-
-    public IntegerProperty currentAmountOfPassengersProperty() {
         return currentAmountOfPassengers;
     }
 
     public void setCurrentAmountOfPassengers(int currentAmountOfPassengers) {
-        this.currentAmountOfPassengers.set(currentAmountOfPassengers);
+        this.currentAmountOfPassengers = (currentAmountOfPassengers);
     }
 
     @Override

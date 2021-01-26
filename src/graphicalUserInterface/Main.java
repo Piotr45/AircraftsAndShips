@@ -38,14 +38,13 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        controlPanelView = new ControlPanelView(primaryStage, controller);
-
         mapPanelView = new MapPanelView(mapStage, controller);
         mapStage.setResizable(false);
         setMapStage();
         scaleMapStage();
         mapPanelView.showWindow();
 
+        controlPanelView = new ControlPanelView(primaryStage, controller);
         setCloseEvent(primaryStage);
 
         new AnimationTimer() {
@@ -87,7 +86,7 @@ public class Main extends Application {
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent e) {
-                threadGroup.destroy();
+                //threadGroup.destroy();
                 Platform.exit();
                 System.exit(0);
             }
@@ -95,7 +94,7 @@ public class Main extends Application {
         mapStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent e) {
-                threadGroup.destroy();
+                //threadGroup.destroy();
                 Platform.exit();
                 System.exit(0);
             }

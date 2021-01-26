@@ -1,5 +1,6 @@
-PS,256,128,Titanic,230,1
-PS,256,128,Titanic,150,9
+PS,256,128,Titanic,130,1
+PS,256,128,Titanic,90,9
 PS,256,128,Titanic,100,10
-PA,Warsaw,300,200,200,0
+PA,Warsaw,300,200,50,0
+PA,New York,300,200,1,11
 

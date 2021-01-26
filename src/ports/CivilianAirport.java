@@ -18,8 +18,10 @@ public class CivilianAirport extends Airport {
     }
 
     @Override
-    public Aircraft createAircraft(Pair<Double, Double> coordinates, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, int id, IntegerProperty maximumAmountOfFuel, IntegerProperty currentAmountOfFuel, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport, TravelRoute travelRoute) {
-        return new PassengerAircraft(coordinates, maximumAmountOfPassengers, currentAmountOfPassengers, id, maximumAmountOfFuel, currentAmountOfFuel, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
+    public Aircraft createAircraft(Pair<Double, Double> coordinates, int maximumAmountOfPassengers,
+                                   int currentAmountOfPassengers, int id,int amountOfStaff, Airport lastVisitedAirport,
+                                   Airport nextAirport, TravelRoute travelRoute) {
+        return new PassengerAircraft(coordinates, maximumAmountOfPassengers, currentAmountOfPassengers, id, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute);
     }
 
     @Override
