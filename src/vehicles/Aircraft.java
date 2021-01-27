@@ -33,7 +33,7 @@ public abstract class Aircraft extends Vehicle {
 
     public Aircraft(Pair<Double, Double> coordinates, int id, int amountOfStaff, Airport lastVisitedAirport,
                     Airport nextAirport, TravelRoute travelRoute) {
-        super(coordinates, id, 30, travelRoute);
+        super(coordinates, id, 230, travelRoute);
         this.setCoordinates(coordinates);
 
         this.maximumAmountOfFuel = 100.0;
@@ -129,7 +129,6 @@ public abstract class Aircraft extends Vehicle {
     @Override
     public void updateNodes() {
         lastVisitedAirport = (Airport) getNode(currentAirport.getCoordinates(), this.getTravelRoute());
-        System.out.println(nextAirport.toString());
         if (this.damaged) {
             currentAirport = nextAirport;
         } else {

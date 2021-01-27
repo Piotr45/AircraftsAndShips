@@ -18,9 +18,9 @@ public class MilitaryAirport extends Airport implements planeFactory{
     @Override
     public Aircraft createAircraft(Pair<Double, Double> coordinates, int id, int amountOfStaff, Airport lastVisitedAirport, Airport nextAirport,
                                    TravelRoute travelRoute, typesOfArms typeOfArms)
+
     {
-        return new MilitaryAircraft(coordinates, id, amountOfStaff,lastVisitedAirport,
-                nextAirport, travelRoute, typeOfArms);
+        return new MilitaryAircraft(coordinates, id, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute, typeOfArms);
     }
 
     @Override

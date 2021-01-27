@@ -1,14 +1,9 @@
 package graphicalUserInterface;
 
 
-import com.sun.media.jfxmediaimpl.platform.Platform;
 import enumerates.FirmNames;
-import enumerates.States;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import enumerates.typesOfArms;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.concurrent.Task;
-import javafx.fxml.Initializable;
 import javafx.util.Pair;
 import other.Node;
 import other.SeaNode;
@@ -21,20 +16,20 @@ import vehicles.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class Controller{
 
     private static List<Airport> listOfAirports = new ArrayList<Airport>();
-    public static List<Aircraft> listOfAircrafts = new ArrayList<Aircraft>();
-    public static List<Ship> listOfShips = new ArrayList<Ship>();
-    private List<Integer> listOfIds = new ArrayList<>();
-    private List<TravelRoute> listOfTravelRoutes = new ArrayList<>();
-    private List<TravelRoute> listOfSeaRoutes = new ArrayList<>();
+    private static List<Aircraft> listOfAircrafts = new ArrayList<Aircraft>();
+    private static List<Ship> listOfShips = new ArrayList<Ship>();
+    private static List<Integer> listOfIds = new ArrayList<>();
+    private static List<TravelRoute> listOfTravelRoutes = new ArrayList<>();
+    private static List<TravelRoute> listOfSeaRoutes = new ArrayList<>();
+    private static List<TravelRoute> listOfAirCivTravelRoutes = new ArrayList<>();
+    private static List<TravelRoute> listOfAirMilTravelRoutes = new ArrayList<>();
 
     public Controller() throws InterruptedException {
         listOfIds.add(0);
@@ -47,7 +42,7 @@ public class Controller{
         return listOfSeaRoutes;
     }
 
-    public List<Integer> getListOfIds() {
+    public static List<Integer> getListOfIds() {
         return listOfIds;
     }
 
@@ -63,32 +58,27 @@ public class Controller{
         return listOfShips;
     }
 
-    public List<TravelRoute> getListOfTravelRoutes() {
+    public static List<TravelRoute> getListOfTravelRoutes() {
         return listOfTravelRoutes;
     }
 
-    public int assignId() {
+    public static List<TravelRoute> getListOfAirCivTravelRoutes() { return listOfAirCivTravelRoutes; }
+
+    public static List<TravelRoute> getListOfAirMilTravelRoutes() {
+        return listOfAirMilTravelRoutes;
+    }
+
+    public static int assignId() {
         int id = getListOfIds().get(listOfIds.size() - 1) + 1;
         listOfIds.add(id);
         return id;
     }
 
-    public PassengerShip createPassengerShip(String maximumAmountOfPassengers, String currentAmountOfPassengers,
-                                             String firmName, String velocity, String travelRoute) throws InterruptedException {
-        PassengerShip passengerShip = new PassengerShip(assignId(), Integer.parseInt(maximumAmountOfPassengers),
-                new SimpleIntegerProperty(Integer.parseInt(currentAmountOfPassengers)),
-                FirmNames.valueOf(firmName), Integer.parseInt(velocity), getListOfTravelRoutes().get(Integer.parseInt(travelRoute)));
-        addShipToListOfShips(passengerShip);
-        passengerShip.setThread();
-        passengerShip.getThread().start();
-        return passengerShip;
-    }
-
-    public void addAircraftToListOfAircrafts(Aircraft aircraft) {
+    public static void addAircraftToListOfAircrafts(Aircraft aircraft) {
         listOfAircrafts.add(aircraft);
     }
 
-    public void addShipToListOfShips(Ship ship) {
+    public static void addShipToListOfShips(Ship ship) {
         listOfShips.add(ship);
     }
 
@@ -158,7 +148,7 @@ public class Controller{
 
     private int isThisNodeInMainTravelRouteReturnIndexOfThatNode(Pair<Double, Double> pair) throws NullPointerException, InterruptedException {
         try {
-            List<Node> listOfNodes = this.getListOfTravelRoutes().get(1).getCheckpoints();
+            List<Node> listOfNodes = getListOfTravelRoutes().get(1).getCheckpoints();
 
             SeaNode test = new SeaNode(pair);
             for (Node node : listOfNodes) {
@@ -181,7 +171,7 @@ public class Controller{
                 int x = isThisNodeInMainTravelRouteReturnIndexOfThatNode(new Pair<>(
                         Double.parseDouble(list.get(index)),Double.parseDouble(list.get(index + 1))));
                 if (x != -1){
-                    travelRoute.addCheckpointToList(this.getListOfTravelRoutes().get(1).getCheckpoints().get(x));
+                    travelRoute.addCheckpointToList(getListOfTravelRoutes().get(1).getCheckpoints().get(x));
                 } else {
                     addSeaNodeToCheckpointList(travelRoute, list.get(index), list.get(index + 1));
                 }
@@ -199,24 +189,33 @@ public class Controller{
         List<List<String>> records = readCSVFile("resources/routes.csv");
         for (List<String> list : records) {
             TravelRoute travelRoute = new TravelRoute();
+            travelRoute.setId(i);
             if (list.get(0).equals("A")) {
                 for (int index = 1; index < list.size(); index++) {
                     travelRoute.addCheckpointToList(returnAirportNode(list.get(index)));
                 }
+                if (travelRoute.getCheckpoints().get(0) instanceof CivilianAirport) {
+                    listOfAirCivTravelRoutes.add(travelRoute);
+                } else {
+                    listOfAirMilTravelRoutes.add(travelRoute);
+                }
+
             }
             if (list.get(0).equals("S")) {
                 addNewSeaRouteFromStringList(travelRoute, list);
-                this.listOfSeaRoutes.add(travelRoute);
-                travelRoute.setId(i);
+                listOfSeaRoutes.add(travelRoute);
             }
             addTravelRouteToListOfTravelRoutes(travelRoute);
             i++;
         }
     }
 
-    private Node returnAirportNode(String airportName) {
+    private static Node returnAirportNode(String airportName) {
         for (Airport airport : getListOfAirports()) {
             if (airport.toString().equals(airportName + " Airport")) {
+                return airport;
+            }
+            if (airport.toString().equals(airportName)) {
                 return airport;
             }
         }
@@ -236,21 +235,59 @@ public class Controller{
         }
     }
 
-    private void createPassengerAircraft(List<String> attributes) {
+    public static PassengerAircraft createPassengerAircraft(List<String> attributes) {
         CivilianAirport airport = (CivilianAirport) returnAirportNode(attributes.get(1));
         try {
+            assert airport != null;
             PassengerAircraft aircraft = (PassengerAircraft) airport.createAircraft(airport.getCoordinates(), Integer.parseInt(attributes.get(2)),
                     Integer.parseInt(attributes.get(3)), assignId(), Integer.parseInt(attributes.get(4)),
                     null, null, listOfTravelRoutes.get(Integer.parseInt(attributes.get(5))));
             listOfAircrafts.add(aircraft);
             aircraft.setThread();
             aircraft.getThread().start();
+            return aircraft;
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return null;
     }
 
-    public void initializeEntities() throws InterruptedException {
+    public static MilitaryAircraft createMilitaryAircraft(List<String> attributes) {
+        MilitaryAirport airport = (MilitaryAirport) returnAirportNode(attributes.get(1));
+        try {
+            assert airport != null;
+            MilitaryAircraft aircraft = (MilitaryAircraft) airport.createAircraft(airport.getCoordinates(), assignId(),
+                    Integer.parseInt(attributes.get(2)), null, null,  getListOfTravelRoutes().get(
+                            Integer.parseInt(attributes.get(3))), typesOfArms.valueOf(attributes.get(4)));
+            listOfAircrafts.add(aircraft);
+            aircraft.setThread();
+            aircraft.getThread().start();
+            return aircraft;
+        } catch (Exception e) {e.printStackTrace();}
+        return null;
+    }
+
+    public static PassengerShip createPassengerShip(String maximumAmountOfPassengers, String currentAmountOfPassengers,
+                                             String firmName, String velocity, String travelRoute) throws InterruptedException {
+        PassengerShip passengerShip = new PassengerShip(assignId(), Integer.parseInt(maximumAmountOfPassengers),
+                new SimpleIntegerProperty(Integer.parseInt(currentAmountOfPassengers)),
+                FirmNames.valueOf(firmName), Integer.parseInt(velocity), getListOfTravelRoutes().get(Integer.parseInt(travelRoute)));
+        addShipToListOfShips(passengerShip);
+        passengerShip.setThread();
+        passengerShip.getThread().start();
+        return passengerShip;
+    }
+
+    public static MilitaryShip createMilitaryShip(List<String> attributes) {
+        MilitaryShip ship = new MilitaryShip(assignId(), Integer.parseInt(attributes.get(1)),
+                typesOfArms.valueOf(attributes.get(2)) ,getListOfTravelRoutes().get(Integer.parseInt(attributes.get(3))));
+        addShipToListOfShips(ship);
+        ship.setThread();
+        ship.getThread().start();
+        return ship;
+    }
+
+    private void initializeEntities() throws InterruptedException {
         List<List<String>> records = readCSVFile("resources/entities.csv");
         for (List<String> list : records) {
             if (list.get(0).equals("PS")) {
@@ -258,6 +295,12 @@ public class Controller{
             }
             if (list.get(0).equals("PA")) {
                 createPassengerAircraft(list);
+            }
+            if (list.get(0).equals("MS")) {
+                createMilitaryShip(list);
+            }
+            if (list.get(0).equals("MA")) {
+                createMilitaryAircraft(list);
             }
         }
     }

@@ -12,7 +12,8 @@ public enum MyColors {
      bluePantone("#3423A6"),
      lightGrey("#D3D3D3"),
      lightBlue("#add8e6"),
-     lightRed("#A62C2A");
+     lightRed("#A62C2A"),
+     darkGreen("#013220");
 
      public final String hexCode;
 

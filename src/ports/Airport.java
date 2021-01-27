@@ -15,7 +15,6 @@ import java.util.concurrent.Semaphore;
 
 public class Airport extends Node implements planeFactory {
 
-    private Aircraft currentServicedAircraft = null;
     private Semaphore semaphore = new Semaphore(5);
     private Random random = new Random();
 
@@ -50,14 +49,6 @@ public class Airport extends Node implements planeFactory {
         semaphore.release();
     }
 
-    public Aircraft getCurrentServicedAircraft() {
-        return currentServicedAircraft;
-    }
-
-    public void setCurrentServicedAircraft(Aircraft currentServicedAircraft) {
-        this.currentServicedAircraft = currentServicedAircraft;
-    }
-
 
     public void serviceAircraft(Aircraft aircraft){
         try {
@@ -70,8 +61,7 @@ public class Airport extends Node implements planeFactory {
 
     @Override
     public String getInfo() {
-        return super.getInfo() + "\n" +
-                "Current serviced aircraft: " + this.getCurrentServicedAircraft();
+        return super.getInfo();
     }
 
     @Override

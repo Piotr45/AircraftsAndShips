@@ -13,18 +13,13 @@ import other.TravelRoute;
 
 public abstract class Ship extends Vehicle {
 
-    private int maximumAmountOfPassengers;
-    private IntegerProperty currentAmountOfPassengers = new SimpleIntegerProperty(this, "currentAmountOfPassengers");
     private SeaNode previousNode;
     private SeaNode currentNode;
     private SeaNode destinationNode;
 
-    public Ship(int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers,
-                int velocity, TravelRoute travelRoute) {
+    public Ship(int id, int velocity, TravelRoute travelRoute) {
         super(id, velocity, travelRoute);
         this.setState(States.traveling);
-        this.maximumAmountOfPassengers = maximumAmountOfPassengers;
-        this.currentAmountOfPassengers = currentAmountOfPassengers;
         this.currentNode = (SeaNode) getNode(getCoordinates(), travelRoute);
         newDestinationBasedOnCurrent();
     }
@@ -36,25 +31,6 @@ public abstract class Ship extends Vehicle {
         return currentNode;
     }
 
-    public int getMaximumAmountOfPassengers() {
-        return maximumAmountOfPassengers;
-    }
-
-    public void setMaximumAmountOfPassengers(int maximumAmountOfPassengers) {
-        this.maximumAmountOfPassengers = maximumAmountOfPassengers;
-    }
-
-    public int getCurrentAmountOfPassengers() {
-        return currentAmountOfPassengers.get();
-    }
-
-    public IntegerProperty currentAmountOfPassengersProperty() {
-        return currentAmountOfPassengers;
-    }
-
-    public void setCurrentAmountOfPassengers(int currentAmountOfPassengers) {
-        this.currentAmountOfPassengers.set(currentAmountOfPassengers);
-    }
 
     @Override
     public void newDestinationBasedOnCurrent() {
@@ -109,8 +85,6 @@ public abstract class Ship extends Vehicle {
     @Override
     public String getInfo() {
         return super.getInfo() + "\n" +
-                "Maximum amount of passengers: " + maximumAmountOfPassengers + "\n" +
-                "Current amount of passengers: " + currentAmountOfPassengers + "\n" +
                 "Velocity of ship: " + getVelocity();
     }
 

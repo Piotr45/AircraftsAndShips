@@ -1,34 +1,32 @@
 package vehicles;
 
 import enumerates.typesOfArms;
+import interfaces.planeFactory;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.IntegerProperty;
 import javafx.util.Pair;
 import other.TravelRoute;
+import ports.Airport;
 
-public class MilitaryShip extends Ship {//implements planeFactory{
+public class MilitaryShip extends Ship implements planeFactory {
 
     private typesOfArms typeOfArms;
 
-    public MilitaryShip(int id, int maximumAmountOfPassengers, IntegerProperty currentAmountOfPassengers, String firmName, int speed, typesOfArms typeOfArms, TravelRoute travelRoute) {
-        super(id, maximumAmountOfPassengers, currentAmountOfPassengers, speed, travelRoute);
+    public MilitaryShip(int id, int speed, typesOfArms typeOfArms, TravelRoute travelRoute) {
+        super(id, speed, travelRoute);
         this.typeOfArms = typeOfArms;
     }
 
     public MilitaryShip() {
     }
 
-
-    public void launchNewMilitaryAircraft(){}
-
-//    @Override
-//    public Aircraft createPlane(float maximumAmountOfFuel, int maximumAmountOfPassengers, int currentAmountOfPassengers, int amountOfStaff, Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArm) throws Exception {
-//        return new MilitaryAircraft(maximumAmountOfFuel, amountOfStaff, null, nextAirport, travelRoute, ControlPanel.addId(), this.getCoordinates(), typeOfArm);
-//    }
-
-
     public typesOfArms getTypeOfArms() {
         return typeOfArms;
+    }
+
+    @Override
+    public void run() {
+        super.run();
     }
 
     @Override
@@ -40,5 +38,11 @@ public class MilitaryShip extends Ship {//implements planeFactory{
     @Override
     public String toString() {
         return "Military Ship " + this.getId();
+    }
+
+    @Override
+    public Aircraft createAircraft(Pair<Double, Double> coordinates, int id, int amountOfStaff, Airport lastVisitedAirport,
+                                   Airport nextAirport, TravelRoute travelRoute, typesOfArms typeOfArms) {
+        return new MilitaryAircraft(coordinates, id, amountOfStaff, lastVisitedAirport, nextAirport, travelRoute, typeOfArms);
     }
 }

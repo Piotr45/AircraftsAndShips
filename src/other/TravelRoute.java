@@ -15,6 +15,7 @@ public class TravelRoute {
     private Vehicle occupyingVehicle;
 
     public TravelRoute() {
+
     }
 
     public void setId(int id) {

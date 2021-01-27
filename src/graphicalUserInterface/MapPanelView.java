@@ -72,6 +72,7 @@ public class MapPanelView {
     public void resetUI() {
         root.getChildren().clear();
         buildUI();
+        ControlPanelView.refreshSpecificationPanel();
     }
 
     private void buildUI() {
@@ -105,7 +106,7 @@ public class MapPanelView {
     }
 
     private void drawAirports() {
-        for (Airport airport : controller.getListOfAirports()) {
+        for (Airport airport : Controller.getListOfAirports()) {
             drawAirport(airport);
         }
     }
@@ -119,8 +120,12 @@ public class MapPanelView {
             return String.valueOf(MyColors.rajah.hexCode);
         } else if (entity instanceof PassengerShip) {
             return String.valueOf(MyColors.bluePantone.hexCode);
+        } else if (entity instanceof MilitaryShip) {
+            return String.valueOf(MyColors.asparagus.hexCode);
+        } else if (entity instanceof MilitaryAircraft) {
+            return String.valueOf(MyColors.darkGreen.hexCode);
         }
-        return "#fffff";
+        return "#ffffff";
     }
 
     private void drawAirport(Airport airport) {
@@ -157,13 +162,13 @@ public class MapPanelView {
         Tooltip.install(circle, ref.tooltip);
     }
 
-    private void drawAircraft(Aircraft aircraft) {
+    public void drawAircraft(Aircraft aircraft) {
         Pair<Double, Double> coordinates = aircraft.getCoordinates();
         Circle circle = new Circle();
         circle.setCenterX(coordinates.getKey());
         circle.setCenterY(coordinates.getValue());
         circle.setRadius(3);
-        circle.setFill(Paint.valueOf(chooseColor(( ((PassengerAircraft) aircraft) ))));
+        circle.setFill(Paint.valueOf(chooseColor((aircraft ))));
         root.getChildren().add(circle);
     }
 
@@ -184,15 +189,15 @@ public class MapPanelView {
     }
 
     private void drawShips() {
-        for (Ship ship : controller.getListOfShips()) {
+        for (Ship ship : Controller.getListOfShips()) {
             drawShip(ship);
         }
     }
 
     private boolean isItSeaRoute(TravelRoute travelRoute) {
-        if (controller.getListOfTravelRoutes().indexOf(travelRoute) == 1 ||
-                controller.getListOfTravelRoutes().indexOf(travelRoute) == 9 ||
-                controller.getListOfTravelRoutes().indexOf(travelRoute) == 10) {
+        if (Controller.getListOfTravelRoutes().indexOf(travelRoute) == 1 ||
+                Controller.getListOfTravelRoutes().indexOf(travelRoute) == 9 ||
+                Controller.getListOfTravelRoutes().indexOf(travelRoute) == 10) {
             return true;
         }
         return false;
@@ -207,7 +212,7 @@ public class MapPanelView {
     }
 
     private void drawTravelRoutes() {
-        for (TravelRoute travelRoute : controller.getListOfTravelRoutes()) {
+        for (TravelRoute travelRoute : Controller.getListOfTravelRoutes()) {
             if (isItSeaRoute(travelRoute)) {
                 drawTravelRoute(travelRoute, MyColors.lightBlue.hexCode);
             } else if (isItMilitaryRoute(travelRoute)) {
