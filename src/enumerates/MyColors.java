@@ -1,5 +1,8 @@
 package enumerates;
 
+/**
+ * This enumerates contains colors, that I used to paint objects in gui.
+ */
 public enum MyColors {
      darkBlueColor("#152238"),
      keyLime("#E7F59E"),
@@ -17,6 +20,10 @@ public enum MyColors {
 
      public final String hexCode;
 
+     /**
+      * This method return hexCode of requested color.
+      * @param hexCode hexadecimal code of color.
+      */
      private MyColors(String hexCode){
          this.hexCode = hexCode;
      }

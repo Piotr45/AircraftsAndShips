@@ -1,5 +1,8 @@
 package enumerates;
 
+/**
+ * This enumerate contains names of weapons.
+ */
 public enum typesOfArms {
     NONE,
     AGAU8Avenger,

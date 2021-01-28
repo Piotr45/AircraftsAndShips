@@ -26,7 +26,9 @@ import java.util.List;
 
 import static java.lang.Integer.parseInt;
 
-
+/**
+ * ControlPanelView is a class responsible for graphical user interface of controller.
+ */
 public class ControlPanelView implements EventHandler {
 
     private ComboBox<String> chooseVehicleComboBox = new ComboBox<>();
@@ -62,6 +64,9 @@ public class ControlPanelView implements EventHandler {
     private static VBox specificationPanel = new VBox();
     private HBox options = new HBox();
 
+    /**
+     * Controller.
+     */
     public Controller controller;
 
     private final int prefWidth = 200;
@@ -73,6 +78,11 @@ public class ControlPanelView implements EventHandler {
     private TreeItem<Node> airports = new TreeItem<>(new Node("Airports"));
     private static TreeView<Node> treeView;
 
+    /**
+     * ControlPanelView constructor with two parameters.
+     * @param controlPanelWindow - stage of control panel graphical user interface.
+     * @param controller - controller that we will pass as argument to manage data.
+     */
     public ControlPanelView(Stage controlPanelWindow, Controller controller) {
         this.controlPanelWindow = controlPanelWindow;
         this.controller = controller;
@@ -96,6 +106,9 @@ public class ControlPanelView implements EventHandler {
         controlPanelWindow.show();
     }
 
+    /**
+     * This method refreshes specification panel of selected item form tree view.
+     */
     public static void refreshSpecificationPanel() {
         try {
             if (treeView.getSelectionModel().getSelectedItem().getValue() != null) {
@@ -489,7 +502,10 @@ public class ControlPanelView implements EventHandler {
         }
     }
 
-
+    /**
+     * This method menages events that occur on control panel.
+     * @param event - event to manage.
+     */
     @Override
     public void handle(Event event) {
         if (event.getSource() == submitButton) {

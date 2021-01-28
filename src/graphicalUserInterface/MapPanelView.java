@@ -22,6 +22,9 @@ import vehicles.*;
 
 import java.util.List;
 
+/**
+ * This class creates graphical user interface for map.
+ */
 public class MapPanelView {
 
     final double ratio = 1900.0 / 974.0;
@@ -35,10 +38,15 @@ public class MapPanelView {
     private final double initWidth = maxWidth * 0.9;
     private final double initHeight = initWidth / ratio;
 
-
+    /**
+     * Map pane
+     */
     public static StackPane pane = new StackPane();
 
     private final Stage mapWindow;
+    /**
+     * Group with all map elements.
+     */
     public static Group root = new Group();
     private Scene scene;
     private Image image;
@@ -46,6 +54,11 @@ public class MapPanelView {
 
     private Controller controller;
 
+    /**
+     * MapPanelView constructor with two params.
+     * @param mapWindow - stage that we will assign to mapWindow.
+     * @param controller - controller form we will take information's about objects.
+     */
     public MapPanelView(Stage mapWindow, Controller controller) {
         this.mapWindow = mapWindow;
         this.controller = controller;
@@ -69,6 +82,9 @@ public class MapPanelView {
         image = new Image("newMap.png");
     }
 
+    /**
+     * Resets user graphical interface.
+     */
     public void resetUI() {
         root.getChildren().clear();
         buildUI();
@@ -90,6 +106,9 @@ public class MapPanelView {
 
     }
 
+    /**
+     * Shows stage.
+     */
     public void showWindow() {
         mapWindow.show();
     }
@@ -162,6 +181,10 @@ public class MapPanelView {
         Tooltip.install(circle, ref.tooltip);
     }
 
+    /**
+     * Draws aircraft on map.
+     * @param aircraft - aircraft, that we want to draw.
+     */
     public void drawAircraft(Aircraft aircraft) {
         Pair<Double, Double> coordinates = aircraft.getCoordinates();
         Circle circle = new Circle();
@@ -178,6 +201,10 @@ public class MapPanelView {
         }
     }
 
+    /**
+     * Draws ship on map.
+     * @param ship - ship, that we want to draw on map.
+     */
     public void drawShip(Ship ship) {
         Pair<Double, Double> coordinates = ship.getCoordinates();
         Circle circle = new Circle();
@@ -250,6 +277,7 @@ public class MapPanelView {
 
             root.getChildren().add(line);
             root.getChildren().add(circle);
+
         }
     }
 

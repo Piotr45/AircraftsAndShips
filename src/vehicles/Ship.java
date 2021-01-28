@@ -11,12 +11,21 @@ import other.Node;
 import other.SeaNode;
 import other.TravelRoute;
 
+/**
+ * This class describes ship object.
+ */
 public abstract class Ship extends Vehicle {
 
     private SeaNode previousNode;
     private SeaNode currentNode;
     private SeaNode destinationNode;
 
+    /**
+     * Ship class constructor with three parameters.
+     * @param id - unique identifier of vehicle.
+     * @param velocity - velocity of ship.
+     * @param travelRoute - travel route of ship.
+     */
     public Ship(int id, int velocity, TravelRoute travelRoute) {
         super(id, velocity, travelRoute);
         this.setState(States.traveling);
@@ -24,14 +33,23 @@ public abstract class Ship extends Vehicle {
         newDestinationBasedOnCurrent();
     }
 
+    /**
+     * Empty constructor.
+     */
     public Ship() {
     }
 
+    /**
+     * Gets current node.
+     * @return - returns current node.
+     */
     public SeaNode getCurrentNode() {
         return currentNode;
     }
 
-
+    /**
+     * This method finds destination based on current position of ship.
+     */
     @Override
     public void newDestinationBasedOnCurrent() {
         int index = this.getTravelRoute().getCheckpoints().indexOf(this.currentNode) + 1;
@@ -42,6 +60,9 @@ public abstract class Ship extends Vehicle {
         }
     }
 
+    /**
+     * Updates nodes - sets previous and current node, then finds new destination based on current position of ship.
+     */
     @Override
     public void updateNodes() {
         previousNode = (SeaNode) getNode(currentNode.getCoordinates(), this.getTravelRoute());
@@ -49,6 +70,11 @@ public abstract class Ship extends Vehicle {
         newDestinationBasedOnCurrent();
     }
 
+    /**
+     * Moves object.
+     * @param deltaT - delta time.
+     * @throws InterruptedException - can throw this error when we are trying to sleep thread.
+     */
     @Override
     public synchronized void move(double deltaT) throws InterruptedException {
         switch (this.getState()) {
@@ -62,7 +88,7 @@ public abstract class Ship extends Vehicle {
                     updateNodes();
                     setState(States.arriving);
                 } else {
-                    //Thread.sleep(250);
+                    Thread.sleep(150);
                     System.out.println("Failed");
                 }
                 break;
@@ -73,21 +99,31 @@ public abstract class Ship extends Vehicle {
                 currentNode.freeNode();
                 setState(States.traveling);
                 break;
-        }
-        //this.wait();
+        };
     }
 
+    /**
+     * Runs thread.
+     */
     @Override
     public void run() {
             super.run();
     }
 
+    /**
+     * Adds velocity of ship to basic information about this object.
+     * @return - returns information about ship as string.
+     */
     @Override
     public String getInfo() {
         return super.getInfo() + "\n" +
                 "Velocity of ship: " + getVelocity();
     }
 
+    /**
+     * Converts object name to string.
+     * @return - returns string "Ship " + id of this object.
+     */
     @Override
     public String toString() {
         return "Ship " + this.getId();

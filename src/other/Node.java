@@ -10,31 +10,54 @@ import vehicles.Ship;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class Node represents node.
+ */
 public class Node {
 
     private Pair<Double, Double> coordinates = new Pair<>(0.0, 0.0);
     private String name;
     private Pair<Double, Double> primeCoordinates = new Pair<>(0.0, 0.0);
 
+    /**
+     * Node class constructor with two params.
+     * @param coordinates - original coordinates.
+     * @param name - name of node.
+     */
     public Node(Pair<Double, Double> coordinates, String name) {
         init(coordinates);
         this.name = name;
     }
 
+    /**
+     * Node class constructor with single param.
+     * @param name - name of node.
+     */
     public Node(String name) {
         this.name = name;
     }
 
+    /**
+     * Node class constructor with single param.
+     * @param coordinates - original coordinates of node.
+     */
     public Node(Pair<Double, Double> coordinates) {
         init(coordinates);
     }
 
+    /**
+     * Node class constructor with two params.
+     * @param coordinates - original coordinates of node.
+     * @param switcher - responsible for creating ship object in vehicle class.
+     */
     public Node(Pair<Double, Double> coordinates, int switcher) {
         this.primeCoordinates = new Pair<>(coordinates.getKey(), coordinates.getValue());
         this.coordinates = new Pair<>(coordinates.getKey(), coordinates.getValue());
-        //attachListener();
     }
 
+    /**
+     * Empty constructor.
+     */
     public Node() {
     }
 
@@ -42,42 +65,46 @@ public class Node {
         this.primeCoordinates = new Pair<>(coordinates.getKey(), coordinates.getValue());
         this.coordinates = new Pair<>((double)((int) (primeCoordinates.getKey() * Main.initMapWidth/ Main.mapMaxWidth)),
                 (double)((int) (primeCoordinates.getValue() * Main.initMapHeight / Main.mapMaxHeight)));
-        //attachListener();
     }
 
-    private void attachListener() {
-        Main.mapStage.widthProperty().addListener(((observableValue, oldValue, newValue) -> {
-            setX(primeCoordinates.getKey() * newValue.doubleValue() / Main.mapStage.getMaxWidth());
-        }));
-        Main.mapStage.heightProperty().addListener(((observableValue, oldValue, newValue) -> {
-            setY(primeCoordinates.getValue() * newValue.doubleValue() / Main.mapStage.getMaxHeight());
-        }));
-    }
-
+    /**
+     * Gets pair of coordinates.
+     * @return - returns coordinates of an object.
+     */
     public Pair<Double, Double> getCoordinates() {
         return coordinates;
     }
 
+    /**
+     * Sets coordinates of an object.
+     * @param coordinates - Pair of two doubles passed to set coordinates of an object.
+     */
     public void setCoordinates(Pair<Double, Double> coordinates) {
         this.coordinates = coordinates;
     }
 
-    public void setX(double value) {
-        //coordinates.getKey().set((int) value);
-    }
-
-    public void setY(double value) {
-        //coordinates.getValue().set((int) value);
-    }
-
+    /**
+     * Sets name of an node.
+     * @return - returns name of node.
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     * Sets name of an node.
+     * @param name - name of an object.
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     * Rounds value of passed param.
+     * @param value - value that we will round.
+     * @param places - number of digits after ".".
+     * @return - returns rounded number.
+     */
     public static double round(double value, int places) {
         if (places < 0) throw new IllegalArgumentException();
 
@@ -87,12 +114,19 @@ public class Node {
         return (double) tmp / factor;
     }
 
+    /**
+     * Method used to pass information of an node to one string.
+     * @return - returns string that contains all params of node.
+     */
     public String getInfo() {
         return "Name: " + this.name + "\n" +
                 "Coordinates: (" + round(this.coordinates.getKey(), 2) + ", " + round(this.coordinates.getValue(),2) + ")";
-
     }
 
+    /**
+     * Changes object name to name or coordinates.
+     * @return - returns coordinates as string or name.
+     */
     @Override
     public String toString() {
         if (name == null){

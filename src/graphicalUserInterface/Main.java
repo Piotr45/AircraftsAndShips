@@ -13,6 +13,9 @@ import vehicles.Ship;
 
 import java.util.concurrent.CountDownLatch;
 
+/**
+ * Main class of application.
+ */
 public class Main extends Application {
 
     public static double ratio = 1900.0 / 974.0;

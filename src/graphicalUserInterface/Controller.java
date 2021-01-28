@@ -20,6 +20,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * In this class you can find lists with objects, functions that creates them and reads data form files with basic setup.
+ */
 public class Controller{
 
     private static List<Airport> listOfAirports = new ArrayList<Airport>();
@@ -31,6 +34,11 @@ public class Controller{
     private static List<TravelRoute> listOfAirCivTravelRoutes = new ArrayList<>();
     private static List<TravelRoute> listOfAirMilTravelRoutes = new ArrayList<>();
 
+    /**
+     * Controller constructor.
+     * In this constructor we are initializing all objects such as airports, travel routes and all entities.
+     * @throws InterruptedException - thread related.
+     */
     public Controller() throws InterruptedException {
         listOfIds.add(0);
         initializeAirports();
@@ -38,70 +46,114 @@ public class Controller{
         initializeEntities();
     }
 
+    /**
+     * Gets list of sea routes.
+     * @return - returns list of sea routes.
+     */
     public List<TravelRoute> getListOfSeaRoutes() {
         return listOfSeaRoutes;
     }
 
+    /**
+     * Gets list of identifiers.
+     * @return - returns identifiers of all objects.
+     */
     public static List<Integer> getListOfIds() {
         return listOfIds;
     }
 
+    /**
+     * Gets list of all airports.
+     * @return - returns list of all airports.
+     */
     public static List<Airport> getListOfAirports() {
         return listOfAirports;
     }
 
+    /**
+     * Gets list of all aircraft's.
+     * @return - returns list of aircraft's
+     */
     public static List<Aircraft> getListOfAircrafts() {
         return listOfAircrafts;
     }
 
+    /**
+     * Gets list of ships.
+     * @return - returns list of ships.
+     */
     public static List<Ship> getListOfShips() {
         return listOfShips;
     }
 
+    /**
+     * Gets List of travel routes.
+     * @return - returns list of all travel routes.
+     */
     public static List<TravelRoute> getListOfTravelRoutes() {
         return listOfTravelRoutes;
     }
 
+    /**
+     * Gets list of air civilian travel routes.
+     * @return - returns list of air civilian travel routes.
+     */
     public static List<TravelRoute> getListOfAirCivTravelRoutes() { return listOfAirCivTravelRoutes; }
 
+    /**
+     * Gets list of air military travel routes.
+     * @return - returns list of air military travel routes.
+     */
     public static List<TravelRoute> getListOfAirMilTravelRoutes() {
         return listOfAirMilTravelRoutes;
     }
 
+    /**
+     * This method assigns unique identifier to object and adds it to list of Id's.
+     * @return - returns id for new object.
+     */
     public static int assignId() {
         int id = getListOfIds().get(listOfIds.size() - 1) + 1;
         listOfIds.add(id);
         return id;
     }
 
-    public static void addAircraftToListOfAircrafts(Aircraft aircraft) {
-        listOfAircrafts.add(aircraft);
-    }
-
+    /**
+     * Adds ship to list of ship.
+     * @param ship - new ship, that we want to add to list of ships.
+     */
     public static void addShipToListOfShips(Ship ship) {
         listOfShips.add(ship);
     }
 
-    public void removeAircraftFromListOfAircrafts(Aircraft aircraft) {
+    /**
+     * Removes Aircraft from list of aircraft's.
+     * @param aircraft - aircraft that we want to remove.
+     */
+    public static void removeAircraftFromListOfAircrafts(Aircraft aircraft) {
         listOfAircrafts.remove(aircraft);
     }
 
-    public void removeShipFromListOfShips(Ship ship) {
-        listOfShips.remove(ship);
-    }
-
+    /**
+     * Adds new airport to list of airports.
+     * @param airport - airport, that we want to add to list of airports.
+     */
     public void addAirportToListOfAirports(Airport airport) {
         listOfAirports.add(airport);
     }
 
-    public void removeAirportFromListOfAirports(Airport airport) {
-        listOfAirports.remove(airport);
-    }
-
+    /**
+     * This method adds new travel route to list of travel routes.
+     * @param travelRoute - travel route that we want to add to list of travel routes.
+     */
     public void addTravelRouteToListOfTravelRoutes(TravelRoute travelRoute) {
         listOfTravelRoutes.add(travelRoute);
     }
 
+    /**
+     * Gets list of civilian airport's.
+     * @return - returns list of civilian airports.
+     */
     public List<Airport> getListOfCivilianAirports() {
         List<Airport> listOfCivilianAirports = new ArrayList<>();
         for (Airport item : listOfAirports) {
@@ -112,6 +164,10 @@ public class Controller{
         return listOfCivilianAirports;
     }
 
+    /**
+     * Gets list of military airports.
+     * @return
+     */
     public List<Airport> getListOfMilitaryAirports() {
         List<Airport> listOfMilitaryAirports = new ArrayList<>();
         for (Airport item : listOfAirports) {
@@ -235,6 +291,17 @@ public class Controller{
         }
     }
 
+    /**
+     * This method creates new passenger aircraft.
+     * We are passing list of arguments. This list should contain:
+     * - name of airport,
+     * - maximum amount of passengers,
+     * - current amount of passengers,
+     * - number of travel route, that we are choosing.
+     * After creating passenger aircraft, we are going to create thread and start it.
+     * @param attributes - list of parameters.
+     * @return - returns new aircraft.
+     */
     public static PassengerAircraft createPassengerAircraft(List<String> attributes) {
         CivilianAirport airport = (CivilianAirport) returnAirportNode(attributes.get(1));
         try {
@@ -252,12 +319,23 @@ public class Controller{
         return null;
     }
 
+    /**
+     * This method creates new military aircraft.
+     * We are passing list of arguments. This list should contain:
+     * - name of airport,
+     * - amount of staff,
+     * - number of travel route, that we are choosing,
+     * - type of arming.
+     * After creating military aircraft, we are going to create thread and start it.
+     * @param attributes - list of parameters.
+     * @return - returns new aircraft.
+     */
     public static MilitaryAircraft createMilitaryAircraft(List<String> attributes) {
         MilitaryAirport airport = (MilitaryAirport) returnAirportNode(attributes.get(1));
         try {
             assert airport != null;
             MilitaryAircraft aircraft = (MilitaryAircraft) airport.createAircraft(airport.getCoordinates(), assignId(),
-                    Integer.parseInt(attributes.get(2)), null, null,  getListOfTravelRoutes().get(
+                    Integer.parseInt(attributes.get(2)), null, null, getListOfTravelRoutes().get(
                             Integer.parseInt(attributes.get(3))), typesOfArms.valueOf(attributes.get(4)));
             listOfAircrafts.add(aircraft);
             aircraft.setThread();
@@ -267,8 +345,18 @@ public class Controller{
         return null;
     }
 
+    /**
+     * This method creates new passenger ship.
+     * After creating passenger ship, we are going to create thread and start it.
+     * @param maximumAmountOfPassengers - maximum amount of passengers, that can be on ship during voyage.
+     * @param currentAmountOfPassengers - current amount of passengers, that are on ship during voyage.
+     * @param firmName - name of firm, that created this ship.
+     * @param velocity - velocity of ship.
+     * @param travelRoute - number of travel route from list of travel routes.
+     * @return - returns passenger ship.
+     */
     public static PassengerShip createPassengerShip(String maximumAmountOfPassengers, String currentAmountOfPassengers,
-                                             String firmName, String velocity, String travelRoute) throws InterruptedException {
+                                             String firmName, String velocity, String travelRoute){
         PassengerShip passengerShip = new PassengerShip(assignId(), Integer.parseInt(maximumAmountOfPassengers),
                 new SimpleIntegerProperty(Integer.parseInt(currentAmountOfPassengers)),
                 FirmNames.valueOf(firmName), Integer.parseInt(velocity), getListOfTravelRoutes().get(Integer.parseInt(travelRoute)));
@@ -277,7 +365,16 @@ public class Controller{
         passengerShip.getThread().start();
         return passengerShip;
     }
-
+    /**
+     * This method creates new military ship.
+     * We are passing list of arguments. This list should contain:
+     * - velocity,
+     * - type of arming,
+     * - number of travel route, that we are choosing.
+     * After creating military ship, we are going to create thread and start it.
+     * @param attributes - list of parameters.
+     * @return - returns new military ship.
+     */
     public static MilitaryShip createMilitaryShip(List<String> attributes) {
         MilitaryShip ship = new MilitaryShip(assignId(), Integer.parseInt(attributes.get(1)),
                 typesOfArms.valueOf(attributes.get(2)) ,getListOfTravelRoutes().get(Integer.parseInt(attributes.get(3))));

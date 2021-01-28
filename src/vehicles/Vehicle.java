@@ -9,6 +9,9 @@ import other.TravelRoute;
 
 import java.util.Random;
 
+/**
+ * Class vehicle represents a vehicle.
+ */
 public abstract class Vehicle extends Node implements Runnable {
 
     private int id;
@@ -20,6 +23,13 @@ public abstract class Vehicle extends Node implements Runnable {
     private Node destinationNode;
     private Thread thread;
 
+    /**
+     * Vehicle class constructor with four params.
+     * @param coordinates - original coordinates of vehicle.
+     * @param id - unique identifier of vehicle.
+     * @param velocity - velocity of an vehicle.
+     * @param travelRoute - travel route of an vehicle.
+     */
     public Vehicle(Pair<Double, Double> coordinates, int id, int velocity, TravelRoute travelRoute) {
         super(coordinates);
         this.id = id;
@@ -28,6 +38,12 @@ public abstract class Vehicle extends Node implements Runnable {
         this.travelRoute = travelRoute;
     }
 
+    /**
+     * Vehicle class constructor with three parameters.
+     * @param id - unique identifier of vehicle.
+     * @param velocity - velocity of an vehicle.
+     * @param travelRoute - travel route of an vehicle.
+     */
     public Vehicle(int id, int velocity, TravelRoute travelRoute) {
         super(travelRoute.findRandomCheckpoint().getCoordinates(), 1);
         this.id = id;
@@ -35,54 +51,101 @@ public abstract class Vehicle extends Node implements Runnable {
         this.travelRoute = travelRoute;
     }
 
-    public Vehicle(String name) {
-        super(name);
-    }
-
+    /**
+     * Empty constructor.
+     */
     public Vehicle() {
     }
 
+    /**
+     * Set new travel route.
+     * @param travelRoute - travel route object.
+     */
     public void setTravelRoute(TravelRoute travelRoute) {
         this.travelRoute = travelRoute;
     }
 
+    /**
+     * Gets thread.
+     * @return - returns thread.
+     */
     public Thread getThread() {
         return thread;
     }
 
+    /**
+     * Sets thread.
+     */
     public void setThread() {
         this.thread = new Thread(Main.threadGroup, this);
     }
 
+    /**
+     * Gets identifier of an object.
+     * @return - returns id.
+     */
     public int getId() {
         return id;
     }
 
+    /**
+     * Sets identifier.
+     * @param id - unique identifier of vehicle.
+     */
     public void setId(int id) {
         this.id = id;
     }
 
+    /**
+     * Gets state of an object.
+     * @return - returns state of this object.
+     */
     public States getState() {
         return state;
     }
 
+    /**
+     * Gets velocity of object.
+     * @return - returns velocity of vehicle.
+     */
     public int getVelocity() {
         return velocity;
     }
 
+    /**
+     * Sets new movement state.
+     * @param state - one of movements states form class States.
+     */
     public void setState(States state) {
         this.state = state;
     }
 
+    /**
+     * Gets travel route of an object.
+     * @return - returns travel route.
+     */
     public TravelRoute getTravelRoute() {
         return travelRoute;
     }
 
+    /**
+     * Compares two pairs of coordinates.
+     * @param pair1 - first pair of coordinates.
+     * @param pair2 - second pair of coordinates.
+     * @return - returns true if pairs match, else false
+     */
     public Boolean areCoordinatesTheSame(Pair<Double, Double> pair1,
                                          Pair<Double, Double> pair2) {
         return pair1.getKey() == pair2.getKey() && pair1.getValue() == pair2.getValue();
     }
 
+    /**
+     * This method searches checkpoint list in travel route and if passed coordinates belongs to node in this list
+     * return that node.
+     * @param pair - pair of two doubles, that we want to check.
+     * @param travelRoute - travel route, that we want to iterate.
+     * @return - returns node if we found node with this coordinates, else return null.
+     */
     public Node getNode(Pair<Double, Double> pair, TravelRoute travelRoute) {
         for (Node node : travelRoute.getCheckpoints()) {
             if (areCoordinatesTheSame(pair, node.getCoordinates())) {
@@ -92,13 +155,26 @@ public abstract class Vehicle extends Node implements Runnable {
         return null;
     }
 
+    /**
+     * Updates nodes, implemented later.
+     */
     public void updateNodes() {
     }
 
+    /**
+     * Finds new destination. Implemented later.
+     */
     public void newDestinationBasedOnCurrent() {
 
     }
 
+    /**
+     * This method moves vehicle in its destination.
+     * @param vehicle - vehicle that we are moving.
+     * @param deltaT - delta time.
+     * @param nextCheckpoint - destination.
+     * @return - returns true if vehicle is not near destination, else false.
+     */
     public Boolean moveTo(Vehicle vehicle, double deltaT, Node nextCheckpoint) {
         MyVector vector = new MyVector(vehicle.getCoordinates(), nextCheckpoint.getCoordinates());
         MyVector normalizedVector = new MyVector(vector);
@@ -115,6 +191,11 @@ public abstract class Vehicle extends Node implements Runnable {
         }
     }
 
+    /**
+     * Function that operates on states of vehicle.
+     * @param deltaT - delta time.
+     * @throws InterruptedException - throws InterruptedException.
+     */
     public synchronized void move(double deltaT) throws InterruptedException {
         switch (this.state) {
             case traveling: {
@@ -133,6 +214,9 @@ public abstract class Vehicle extends Node implements Runnable {
         }
     }
 
+    /**
+     * Runs thread.
+     */
     @Override
     public void run() {
         try {

@@ -14,12 +14,14 @@ import other.TravelRoute;
 import ports.Airport;
 import javafx.util.Pair;
 import enumerates.typesOfArms;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
+/**
+ * This class represents aircraft.
+ */
 public abstract class Aircraft extends Vehicle {
 
     private double maximumAmountOfFuel;
@@ -31,6 +33,15 @@ public abstract class Aircraft extends Vehicle {
     private Boolean damaged = false;
     private double distanceBetweenAircraftAndAirport;
 
+    /**
+     * Aircraft class constructor with six parameters.
+     * @param coordinates - original coordinates of aircraft.
+     * @param id - unique identifier of vehicle.
+     * @param amountOfStaff - amount of staff.
+     * @param lastVisitedAirport - last visited airport.
+     * @param nextAirport - destination airport.
+     * @param travelRoute - travel route of this aircraft.
+     */
     public Aircraft(Pair<Double, Double> coordinates, int id, int amountOfStaff, Airport lastVisitedAirport,
                     Airport nextAirport, TravelRoute travelRoute) {
         super(coordinates, id, 230, travelRoute);
@@ -45,9 +56,16 @@ public abstract class Aircraft extends Vehicle {
         newDestinationBasedOnCurrent();
     }
 
+    /**
+     * Empty constructor.
+     */
     public Aircraft() {
     }
 
+    /**
+     * Gets list of nodes. List contains last visited airport, current airport and destination airport.
+     * @return - returns list of nodes.
+     */
     public List<Airport> getListOfNodes() {
         List<Airport> arrayList = new ArrayList<>();
         arrayList.add(lastVisitedAirport);
@@ -56,54 +74,99 @@ public abstract class Aircraft extends Vehicle {
         return arrayList;
     }
 
+    /**
+     * Gets current airport.
+     * @return - returns current airport.
+     */
     public Airport getCurrentAirport() {
         return currentAirport;
     }
 
+    /**
+     * Gets maximum amount of fuel.
+     * @return - returns maximum amount of fuel.
+     */
     public double getMaximumAmountOfFuel() {
         return maximumAmountOfFuel;
     }
 
-    public double maximumAmountOfFuelProperty() {
-        return maximumAmountOfFuel;
-    }
-
+    /**
+     * Sets maximum amount of fuel.
+     * @param maximumAmountOfFuel - new maximum amount of fuel.
+     */
     public void setMaximumAmountOfFuel(double maximumAmountOfFuel) {
         this.maximumAmountOfFuel = (maximumAmountOfFuel);
     }
 
+    /**
+     * Gets current amount of fuel.
+     * @return - returns current amount of fuel.
+     */
     public double getCurrentAmountOfFuel() {
         return currentAmountOfFuel;
     }
 
+    /**
+     * Sets current amount of fuel.
+     * @param currentAmountOfFuel - new current amount of fuel.
+     */
     public void setCurrentAmountOfFuel(double currentAmountOfFuel) {
         this.currentAmountOfFuel = (currentAmountOfFuel);
     }
 
+    /**
+     * Gets amount of staff.
+     * @return - returns amount of staff.
+     */
     public int getAmountOfStaff() {
         return amountOfStaff;
     }
 
+    /**
+     * Sets amount of staff.
+     * @param amountOfStaff - new amount of staff.
+     */
     public void setAmountOfStaff(int amountOfStaff) {
         this.amountOfStaff = amountOfStaff;
     }
 
+    /**
+     * Gets last visited airport.
+     * @return - returns last visited airport.
+     */
     public Airport getLastVisitedAirport() {
         return lastVisitedAirport;
     }
 
+    /**
+     * Sets last visited airport.
+     * @param lastVisitedAirport - new last visited airport.
+     */
     public void setLastVisitedAirport(Airport lastVisitedAirport) {
         this.lastVisitedAirport = lastVisitedAirport;
     }
 
+    /**
+     * Gets destination airport.
+     * @return - returns destination airport.
+     */
     public Airport getNextAirport() {
         return nextAirport;
     }
 
+    /**
+     * Sets new next airport.
+     * @param nextAirport - new destination airport.
+     */
     public void setNextAirport(Airport nextAirport) {
         this.nextAirport = nextAirport;
     }
 
+    /**
+     * Overrides method form vehicle.
+     * This method finds new destination airport based on current location of aircraft.
+     * @throws NullPointerException - throws null pointer exception.
+     */
     @Override
     public void newDestinationBasedOnCurrent() throws NullPointerException{
         if (currentAirport.equals(this.getTravelRoute().getCheckpoints().get(
@@ -126,6 +189,10 @@ public abstract class Aircraft extends Vehicle {
         return true;
     }
 
+    /**
+     * Overrides method from vehicle class.
+     * This method updates last visited airport, current airport and destination airport to new values.
+     */
     @Override
     public void updateNodes() {
         lastVisitedAirport = (Airport) getNode(currentAirport.getCoordinates(), this.getTravelRoute());
@@ -137,6 +204,12 @@ public abstract class Aircraft extends Vehicle {
         newDestinationBasedOnCurrent();
     }
 
+    /**
+     * Overrides method from vehicle class.
+     * This method is responsible for states and movement of aircraft.
+     * @param deltaT - delta time.
+     * @throws InterruptedException - trying to sleep thread can cause InterruptedException.
+     */
     @Override
     public synchronized void move(double deltaT) throws InterruptedException {
         switch (this.getState()) {
@@ -159,7 +232,7 @@ public abstract class Aircraft extends Vehicle {
                 this.setCoordinates(currentAirport.getCoordinates());
                 if (damaged) {
                     Thread.currentThread().join();
-                    Controller.getListOfAircrafts().remove(Controller.getListOfAircrafts().indexOf(this));
+                    Controller.removeAircraftFromListOfAircrafts(this);
                 } else {
                     currentAirport.occupy(this);
                     if (checkIfCanFly()) {
@@ -174,6 +247,9 @@ public abstract class Aircraft extends Vehicle {
         }
     }
 
+    /**
+     * Runs thread.
+     */
     @Override
     public void run() {
         super.run();
@@ -201,11 +277,18 @@ public abstract class Aircraft extends Vehicle {
         return closestAirport;
     }
 
+    /**
+     * This method is sending aircraft to closest airport and marks it as damaged.
+     */
     public void emergencyLanding() {
         this.nextAirport = findClosestAirport();
         damaged = true;
     }
 
+    /**
+     * Gets information about aircraft.
+     * @return - returns information about aircraft as string.
+     */
     @Override
     public String getInfo() {
         return super.getInfo() + "\n" +
@@ -216,6 +299,10 @@ public abstract class Aircraft extends Vehicle {
                 "Amount of staff: " + amountOfStaff;
     }
 
+    /**
+     * Converts object name to string.
+     * @return - returns string: "Aircraft " + id of it.
+     */
     @Override
     public String toString() {
         return "Aircraft " + this.getId();
