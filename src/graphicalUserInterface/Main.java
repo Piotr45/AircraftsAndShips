@@ -3,18 +3,13 @@ package graphicalUserInterface;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.application.Platform;
-import javafx.concurrent.Service;
-import javafx.concurrent.Task;
+
 import javafx.event.EventHandler;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import vehicles.Aircraft;
-import vehicles.Ship;
-
-import java.util.concurrent.CountDownLatch;
 
 /**
- * Main class of application.
+ * graphicalUserInterface.Main class of application.
  */
 public class Main extends Application {
 
@@ -24,7 +19,7 @@ public class Main extends Application {
     public static double initMapWidth = (int) mapMaxWidth * 0.9;
     public static double initMapHeight = (int) initMapWidth / ratio;
 
-    public static Stage mapStage = new Stage();
+    public static Stage mapStage;
     public static Controller controller;
 
     static {
@@ -33,6 +28,12 @@ public class Main extends Application {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+    }
+
+    static {
+        try {
+            mapStage = new Stage();
+        } catch (ExceptionInInitializerError ignore) {}
     }
 
     public static MapPanelView mapPanelView;

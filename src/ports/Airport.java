@@ -46,7 +46,7 @@ public class Airport extends Node implements planeFactory {
 
     /**
      * In this method we will try to sleep thread and service aircraft that is occupying this airport right now.
-     * @param aircraft
+     * @param aircraft - the plane that is occupying.
      */
     public void occupy(Aircraft aircraft) {
         try {

@@ -1,13 +1,6 @@
 package vehicles;
 
 import enumerates.States;
-import graphicalUserInterface.Main;
-import javafx.application.Platform;
-import javafx.beans.property.IntegerProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.concurrent.Task;
-import javafx.util.Pair;
-import other.Node;
 import other.SeaNode;
 import other.TravelRoute;
 

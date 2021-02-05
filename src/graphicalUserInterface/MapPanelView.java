@@ -1,6 +1,5 @@
 package graphicalUserInterface;
 
-import javafx.beans.property.DoubleProperty;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.Tooltip;
@@ -8,7 +7,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.*;
-import javafx.scene.shape.Polygon;
 import javafx.stage.Stage;
 import javafx.scene.image.Image;
 import enumerates.MyColors;

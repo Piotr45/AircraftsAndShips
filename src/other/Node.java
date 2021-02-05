@@ -1,14 +1,7 @@
 package other;
 
 import graphicalUserInterface.Main;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
 import javafx.util.Pair;
-import vehicles.Ship;
-
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class Node represents node.

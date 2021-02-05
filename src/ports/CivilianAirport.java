@@ -31,7 +31,7 @@ public class CivilianAirport extends Airport {
      * @param lastVisitedAirport - last visited airport.
      * @param nextAirport - destination airport.
      * @param travelRoute - travel route of an aircraft.
-     * @return
+     * @return - returns passenger aircraft.
      */
     @Override
     public Aircraft createAircraft(Pair<Double, Double> coordinates, int maximumAmountOfPassengers,

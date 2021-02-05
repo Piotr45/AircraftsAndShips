@@ -242,7 +242,7 @@ public class Controller{
 
     private void initializeRoutes() throws InterruptedException {
         int i = 0;
-        List<List<String>> records = readCSVFile("resources/routes.csv");
+        List<List<String>> records = readCSVFile("src/routes.csv");
         for (List<String> list : records) {
             TravelRoute travelRoute = new TravelRoute();
             travelRoute.setId(i);
@@ -255,7 +255,6 @@ public class Controller{
                 } else {
                     listOfAirMilTravelRoutes.add(travelRoute);
                 }
-
             }
             if (list.get(0).equals("S")) {
                 addNewSeaRouteFromStringList(travelRoute, list);
@@ -279,7 +278,7 @@ public class Controller{
     }
 
     private void initializeAirports() {
-        List<List<String>> records = readCSVFile("resources/airports.csv");
+        List<List<String>> records = readCSVFile("src/airports.csv");
         for (List<String> list : records) {
             if (list.get(0).equals("C")) {
                 createCivilianAirport(list.get(1), Integer.parseInt(list.get(2)), Integer.parseInt(list.get(3)));
@@ -385,7 +384,7 @@ public class Controller{
     }
 
     private void initializeEntities() throws InterruptedException {
-        List<List<String>> records = readCSVFile("resources/entities.csv");
+        List<List<String>> records = readCSVFile("src/entities.csv");
         for (List<String> list : records) {
             if (list.get(0).equals("PS")) {
                 createPassengerShip(list.get(1), list.get(2), list.get(3), list.get(4), list.get(5));

@@ -24,8 +24,6 @@ import other.Node;
 import java.util.ArrayList;
 import java.util.List;
 
-import static java.lang.Integer.parseInt;
-
 /**
  * ControlPanelView is a class responsible for graphical user interface of controller.
  */
@@ -502,6 +500,114 @@ public class ControlPanelView implements EventHandler {
         }
     }
 
+    private Boolean velocityErrorBox() {
+        if (Integer.parseInt(velocityTextField.getText()) < 0) {
+            AlertBox.displayAlertBoxWindow("Velocity error", "Velocity can't be negative!");
+            return true;
+        }
+        else if (Integer.parseInt(velocityTextField.getText()) == 0) {
+            AlertBox.displayAlertBoxWindow("Velocity error", "Velocity can't be zero!");
+            return true;
+        }
+        else if (Integer.parseInt(velocityTextField.getText()) > 200) {
+            AlertBox.displayAlertBoxWindow("Velocity error", "Velocity can't be higher than 200!");
+            return true;
+        }
+        else if (velocityTextField.getText().equals("")) {
+            AlertBox.displayAlertBoxWindow("Velocity error", "Velocity can't be null!");
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean travelRouteErrorBox(int i) {
+        if (airTravelRouteComboBox.getSelectionModel().getSelectedItem().equals("Select travel route") && i == 1) {
+            AlertBox.displayAlertBoxWindow("Travel route error", "Travel route is not selected");
+            return true;
+        }
+        else if (seaTravelRouteComboBox.getSelectionModel().getSelectedItem().equals("Select travel route") && i == 0) {
+            AlertBox.displayAlertBoxWindow("Travel route error", "Travel route is not selected");
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean peopleErrorBox() {
+        if (maximumAmountOfPassengersTextField.getText().equals("") || currentOfPassengersTextField.getText().equals("")) {
+            AlertBox.displayAlertBoxWindow("Text error", "TextBox can't be null!");
+            return true;
+        }
+        else if (Integer.parseInt(maximumAmountOfPassengersTextField.getText()) < 0){
+            AlertBox.displayAlertBoxWindow("Passengers error", "Number of passengers can't be lower than zero!");
+            return true;
+        }
+        else if (Integer.parseInt(currentOfPassengersTextField.getText()) < 0) {
+            AlertBox.displayAlertBoxWindow("Passengers error", "Number of passengers can't be lower than zero!");
+            return true;
+        }
+        else if (Integer.parseInt(currentOfPassengersTextField.getText()) > Integer.parseInt(maximumAmountOfPassengersTextField.getText())) {
+            AlertBox.displayAlertBoxWindow("Passengers error", "Number of passengers can't higher than maximum!");
+            return true;
+        }
+        else if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Aircraft")) {
+            if (amountOfStaffTextField.getText().equals("")) {
+                AlertBox.displayAlertBoxWindow("Text error", "TextBox can't be null!");
+                return true;
+            }
+            if (Integer.parseInt(amountOfStaffTextField.getText()) < 0) {
+                AlertBox.displayAlertBoxWindow("Staff error", "Number of staff can't be lower than zero!");
+                return true;
+            }
+            else if (Integer.parseInt(amountOfStaffTextField.getText()) > 23 ) {
+                AlertBox.displayAlertBoxWindow("Staff error", "Number of staff can't be higher than 23!");
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Boolean militaryError() {
+        if (typeOfArmsComboBox.getSelectionModel().getSelectedItem().equals("Select weapon")) {
+            AlertBox.displayAlertBoxWindow("Weapon error", "You have to choose weapon!");
+            return true;
+        }
+        return false;
+    }
+
+    private Boolean passengerShipError(){
+        if (firmNamesComboBox.getSelectionModel().getSelectedItem().equals("Select firm")) {
+            AlertBox.displayAlertBoxWindow("Firm name error", "You have to choose firm name!");
+            return true;
+        }
+        return false;
+    }
+
+    private void handleEntity() {
+        if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Aircraft") || getSelectedValue(chooseVehicleComboBox).equals("Military Aircraft")) {
+            if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Aircraft")) {
+                if (!peopleErrorBox() && !travelRouteErrorBox(1)){
+                    createAircraftObject();
+                }
+            }
+            else {
+                if (!militaryError() && !travelRouteErrorBox(1)) {
+                    createAircraftObject();
+                }
+            }
+        } else {
+            if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Ship")) {
+                if (!travelRouteErrorBox(0) && !velocityErrorBox() && !peopleErrorBox() && !passengerShipError()){
+                    createShipObject();
+                }
+            }
+            else {
+                if (!militaryError() && !velocityErrorBox() && !travelRouteErrorBox(0)) {
+                    createShipObject();
+                }
+            }
+        }
+    }
+
     /**
      * This method menages events that occur on control panel.
      * @param event - event to manage.
@@ -509,11 +615,7 @@ public class ControlPanelView implements EventHandler {
     @Override
     public void handle(Event event) {
         if (event.getSource() == submitButton) {
-            if (getSelectedValue(chooseVehicleComboBox).equals("Passenger Aircraft") || getSelectedValue(chooseVehicleComboBox).equals("Military Aircraft")) {
-                createAircraftObject();
-            } else {
-                createShipObject();
-            }
+            handleEntity();
             resetVehiclePanel();
             chooseVehicleComboBox.getSelectionModel().select("Select Vehicle");
         }
@@ -552,7 +654,6 @@ public class ControlPanelView implements EventHandler {
         }
 
         if (event.getSource() == chooseVehicleComboBox) {
-            //System.out.println("Event: chooseVehicleComboBox works! Current value equals: " + chooseVehicleComboBox.getValue() + "\n");
             if (chooseVehicleComboBox.getValue().equals("Passenger Aircraft")) {
                 initializeAirportComboBox(true);
                 setVehiclePanelForPassengerAircraft();
